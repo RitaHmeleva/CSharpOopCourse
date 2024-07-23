@@ -1,68 +1,69 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿namespace RangeTask;
 
-namespace RangeTask
+class Range
 {
-    class Range
+    public double From { get; set; }
+
+    public double To { get; set; }
+
+    public Range(double from, double to)
     {
-        public double From { get; set; }
+        From = from;
+        To = to;
+    }
 
-        public double To { get; set; }
+    public double GetLength()
+    {
+        return To - From;
+    }
 
-        public Range(double from, double to)
+    public bool IsInside(double number)
+    {
+        return number >= From && number <= To;
+    }
+
+    public Range? GetIntersect(Range range)
+    {
+        if (range.From >= To || range.To <= From)
         {
-            From = from;
-            To = to;
+            return null;
         }
 
-        public double GetLength()
+        return new Range(Math.Max(From, range.From), Math.Min(To, range.To));
+    }
+
+    public Range[] GetUnion(Range range)
+    {
+        if (range.From > To || range.To < From)
         {
-            return To - From;
+            return new Range[] { new Range(From, To), new Range(range.From, range.To) };
         }
 
-        public bool IsInside(double number)
+        return new Range[] { new Range(Math.Min(From, range.From), Math.Max(To, range.To)) };
+    }
+
+    public Range[] GetDifference(Range range)
+    {
+        if (range.From <= From && range.To >= To)
         {
-            return number >= From && number <= To;
+            return new Range[] { };
         }
 
-        public Range Intersect(Range otherRange)
+        if (range.From >= From && range.To >= To)
         {
-            if (otherRange.From >= To || otherRange.To <= From)
-            {
-                return null;
-            }
-
-            return new Range(Math.Max(From, otherRange.From), Math.Min(To, otherRange.To));
+            return new Range[] { new Range(From, range.From) };
         }
 
-        public Range[] Union(Range otherRange)
+        if (range.From <= From && range.To <= To)
         {
-            if (otherRange.From > To || otherRange.To < From)
-            {
-                return new Range[] { new Range(From, To), new Range(otherRange.From, otherRange.To) };
-            }
-
-            return new Range[] { new Range(Math.Min(From, otherRange.From), Math.Max(To, otherRange.To)) };
+            return new Range[] { new Range(range.To, To) };
         }
 
-        public Range[] Difference(Range otherRange)
-        {
-            if (otherRange.From <= From && otherRange.To >= To)
-            {
-                return null;
-            }
-            if (otherRange.From > From && otherRange.To > To)
-            {
-                return new Range[] { new Range(From, otherRange.From) };
-            }
-            else if (otherRange.From < From && otherRange.To < To)
-            {
-                return new Range[] { new Range(otherRange.To, To) };
-            }
+        return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+    }
 
-            return new Range[] { new Range(From, otherRange.From), new Range(otherRange.To, To) };
-        }
+    public override string ToString()
+    {
+        return From + " - " + To;
     }
 }

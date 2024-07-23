@@ -1,36 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RangeTask
+﻿namespace RangeTask
 {
     internal class RangeCalculation
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Введите начальное число первого диапазона:");
-            double firstRangeStartNumber = Convert.ToDouble(Console.ReadLine());
+            double range1StartNumber = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Введите конечное число первого диапазона:");
-            double firstRangeEndNumber = Convert.ToDouble(Console.ReadLine());
+            double range1EndNumber = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Введите начальное число второго диапазона:");
-            double secondRangeStartNumber = Convert.ToDouble(Console.ReadLine());
+            double range2StartNumber = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Введите конечное число второго диапазона:");
-            double secondRangeEndNumber = Convert.ToDouble(Console.ReadLine());
+            double range2EndNumber = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Введите число:");
             double number = Convert.ToDouble(Console.ReadLine());
 
-            Range firstRange = new Range(firstRangeStartNumber, firstRangeEndNumber);
-            Range secondRange = new Range(secondRangeStartNumber, secondRangeEndNumber);
+            Range range1 = new Range(range1StartNumber, range1EndNumber);
+            Range range2 = new Range(range2StartNumber, range2EndNumber);
 
-            Console.WriteLine("Длина первого диапазона: " + firstRange.GetLength());
+            Console.WriteLine("Длина первого диапазона: " + range1.GetLength());
 
-            if (firstRange.IsInside(number))
+            if (range1.IsInside(number))
             {
                 Console.WriteLine("Введённое число принадлежит первому диапазону");
             }
@@ -39,7 +33,7 @@ namespace RangeTask
                 Console.WriteLine("Введённое число не принадлежит диапазону");
             }
 
-            Range intersectionRange = firstRange.Intersect(secondRange);
+            Range? intersectionRange = range1.GetIntersect(range2);
 
             if (intersectionRange != null)
             {
@@ -50,29 +44,22 @@ namespace RangeTask
                 Console.WriteLine("Нет пересечения");
             }
 
-            Range[] unionRanges = firstRange.Union(secondRange);
+            Range[] unionRanges = range1.GetUnion(range2);
 
             Console.WriteLine("Объединение диапазонов: ");
 
             foreach (Range range in unionRanges)
             {
-                Console.WriteLine(range.From + " - " + range.To);
+                Console.WriteLine(range);
             }
 
-            Range[] rangesDifference = firstRange.Difference(secondRange);
+            Range[] rangesDifference = range1.GetDifference(range2);
 
-            Console.WriteLine("Разность диапазонов: ");
+            Console.WriteLine("Разность диапазонов: " );
 
-            if (rangesDifference != null)
+            foreach (Range range in rangesDifference)
             {
-                foreach (Range range in rangesDifference)
-                {
-                    Console.WriteLine(range.From + " - " + range.To);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Нет разности");
+                Console.WriteLine(range);
             }
 
             Console.ReadLine();
