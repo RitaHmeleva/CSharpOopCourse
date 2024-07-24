@@ -22,7 +22,7 @@ class Range
         return number >= From && number <= To;
     }
 
-    public Range? GetIntersect(Range range)
+    public Range? GetIntersection(Range range)
     {
         if (range.From >= To || range.To <= From)
         {
@@ -49,14 +49,19 @@ class Range
             return new Range[] { };
         }
 
-        if (range.From >= From && range.To >= To)
+        if (range.From >= From && range.To >= To && range.From <= To)
         {
             return new Range[] { new Range(From, range.From) };
         }
 
-        if (range.From <= From && range.To <= To)
+        if (range.From <= From && range.To <= To && range.To >= From)
         {
             return new Range[] { new Range(range.To, To) };
+        }
+
+        if ((range.From >= From && range.To >= To && range.From > To) || (range.From <= From && range.To <= To && range.To < From))
+        {
+            return new Range[] { new Range(From, To) };
         }
 
         return new Range[] { new Range(From, range.From), new Range(range.To, To) };
@@ -64,6 +69,6 @@ class Range
 
     public override string ToString()
     {
-        return From + " - " + To;
+        return "[" + From + "; " + To + "]";
     }
 }

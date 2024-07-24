@@ -33,31 +33,24 @@
                 Console.WriteLine("Введённое число не принадлежит диапазону");
             }
 
-            Range? intersectionRange = range1.GetIntersect(range2);
+            Range? intersection = range1.GetIntersection(range2);
 
-            if (intersectionRange != null)
-            {
-                Console.WriteLine("Диапазон пересечения: " + intersectionRange.From + " - " + intersectionRange.To);
-            }
-            else
-            {
-                Console.WriteLine("Нет пересечения");
-            }
+            Console.WriteLine("Диапазон пересечения: " + intersection);
 
-            Range[] unionRanges = range1.GetUnion(range2);
+            Range[] union = range1.GetUnion(range2);
 
             Console.WriteLine("Объединение диапазонов: ");
 
-            foreach (Range range in unionRanges)
+            foreach (Range range in union)
             {
                 Console.WriteLine(range);
             }
 
-            Range[] rangesDifference = range1.GetDifference(range2);
+            Range[] difference = range1.GetDifference(range2);
 
-            Console.WriteLine("Разность диапазонов: " );
+            Console.WriteLine("Разность диапазонов: ");
 
-            foreach (Range range in rangesDifference)
+            foreach (Range range in difference)
             {
                 Console.WriteLine(range);
             }
