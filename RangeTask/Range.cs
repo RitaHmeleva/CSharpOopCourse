@@ -49,22 +49,22 @@ class Range
             return new Range[] { };
         }
 
-        if (range.From >= From && range.To >= To && range.From <= To)
+        if (range.From >= From && range.To <= To)
+        {
+            return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+        }
+
+        if (range.From >= From && range.From <= To)
         {
             return new Range[] { new Range(From, range.From) };
         }
 
-        if (range.From <= From && range.To <= To && range.To >= From)
+        if (range.To <= To && range.To >= From)
         {
             return new Range[] { new Range(range.To, To) };
         }
 
-        if ((range.From >= From && range.To >= To && range.From > To) || (range.From <= From && range.To <= To && range.To < From))
-        {
-            return new Range[] { new Range(From, To) };
-        }
-
-        return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+        return new Range[] { new Range(From, To) };
     }
 
     public override string ToString()
