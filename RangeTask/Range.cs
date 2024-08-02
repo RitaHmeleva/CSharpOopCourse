@@ -7,6 +7,7 @@ class Range
     public double To { get; set; }
 
     public Range(double from, double to)
+
     {
         From = from;
         To = to;
