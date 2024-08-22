@@ -45,27 +45,38 @@ class Range
 
     public Range[] GetDifference(Range range)
     {
-        if (range.From <= From && range.To >= To)
+        if (range.From <= From)
         {
-            return new Range[] { };
+            if (range.To <= From)
+            {
+                return new Range[] { new Range(From, To) };
+            }
+
+            else if (range.To >= To)
+            {
+                return new Range[] { };
+            }
+
+            else
+            {
+                return new Range[] { new Range(range.To, To) };
+            }
         }
 
-        if (range.From >= From && range.To <= To)
+        if (range.To >= To)
         {
-            return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+            if (range.From >= To)
+            {
+                return new Range[] { new Range(From, To) };
+            }
+
+            else if (range.From >= From)
+            {
+                return new Range[] { new Range(From, range.From) };
+            }
         }
 
-        if (range.From >= From && range.From <= To)
-        {
-            return new Range[] { new Range(From, range.From) };
-        }
-
-        if (range.To <= To && range.To >= From)
-        {
-            return new Range[] { new Range(range.To, To) };
-        }
-
-        return new Range[] { new Range(From, To) };
+        return new Range[] { new Range(From, range.From), new Range(range.To, To) };
     }
 
     public override string ToString()

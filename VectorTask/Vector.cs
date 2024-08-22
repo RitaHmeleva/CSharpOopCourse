@@ -4,212 +4,160 @@ namespace VectorTask
 {
     class Vector
     {
-        private int size;
-        private int[] vector;
+        private double[] _components;
 
-        public Vector(int n)
+        public Vector(int size)
         {
-            if (n <= 0)
+            if (size <= 0)
+            {
+                throw new ArgumentException("Size " + size + " should be > 0");
+            }
+
+            _components = new double[size];
+        }
+
+        public Vector(Vector components)
+        {
+            if (components._components.Length <= 0)
+            {
+                throw new ArgumentException("Size " + components._components.Length + " should be > 0");
+            }
+
+            double[] arrayComponents = components._components;
+
+            _components = arrayComponents;
+        }
+
+        public Vector(double[] components)
+        {
+            if (components.Length <= 0)
+            {
+                throw new ArgumentException("Size " + components.Length + " should be > 0");
+            }
+
+            _components = new double[components.Length];
+
+            Array.Copy(components, 0, _components, 0, components.Length);
+        }
+
+        public Vector(int size, double[] components)
+        {
+            if (size <= 0)
             {
                 throw new ArgumentException("Size n should be > 0");
             }
 
-            vector = new int[n];
-            size = n;
+            _components = new double[size];
 
-            for (int i = 0; i < n; i++)
+            if (components.Length < size)
             {
-                vector[i] = 0;
-            }
-        }
-
-        public Vector(Vector array)
-        {
-            vector = array.vector;
-
-            size = array.size;
-        }
-
-        public Vector(int[] array)
-        {
-            vector = new int[array.Length];
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                vector[i] = array[i];
-            }
-
-            size = array.Length;
-        }
-
-        public Vector(int n, int[] array)
-        {
-            if (n <= 0)
-            {
-                throw new ArgumentException("Size n should be > 0");
-            }
-
-            vector = new int[n];
-
-            if (array.Length < n)
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    vector[i] = array[i];
-                }
-
-                for (int i = array.Length; i < n; i++)
-                {
-                    vector[i] = 0;
-                }
+                Array.Copy(components, 0, _components, 0, components.Length);
             }
             else
             {
-                for (int i = 0; i < n; i++)
-                {
-                    vector[i] = array[i];
-                }
+                Array.Copy(components, 0, _components, 0, size);
             }
-
-            size = n;
         }
 
-        public int GetSize()
+        public int GetSize
         {
-            return size;
+            get { return _components.Length; }
         }
 
         public override string ToString()
         {
-            return string.Join(", ", vector);
+            return "{" + string.Join(", ", _components) + "}";
         }
 
-        public Vector GetSum(Vector vector2)
+        public void GetSum(Vector vector)
         {
-            int[] vectorSum = new int[Math.Max(size, vector2.size)];
-
-            if (size >= vector2.size)
+            if (_components.Length >= vector._components.Length)
             {
-                Vector vec = new Vector(size, vector2.vector);
-
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < vector._components.Length; i++)
                 {
-                    vectorSum[i] = vector[i] + vec.vector[i];
+                    _components[i] += vector._components[i];
                 }
             }
 
-            if (size < vector2.size)
+            else
             {
-                Vector vec = new Vector(vector2.size, vector);
+                Array.Resize(ref _components, vector._components.Length);
 
-                for (int i = 0; i < vector2.size; i++)
+                for (int i = 0; i < vector._components.Length; i++)
                 {
-                    vectorSum[i] = vec.vector[i] + vector2.vector[i];
+                    _components[i] += vector._components[i];
                 }
             }
-
-            return new Vector(vectorSum);
         }
 
-        public Vector GetDifference(Vector vector2)
+        public void GetDifference(Vector vector)
         {
-            int[] vectorDifference = new int[Math.Max(size, vector2.size)];
-
-            if (size >= vector2.size)
+            if (_components.Length >= vector._components.Length)
             {
-                Vector vec = new Vector(size, vector2.vector);
-
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < vector._components.Length; i++)
                 {
-                    vectorDifference[i] = vector[i] + vec.vector[i];
+                    _components[i] -= vector._components[i];
                 }
             }
 
-            if (size < vector2.size)
+            else
             {
-                Vector vec = new Vector(vector2.size, vector);
+                Array.Resize(ref _components, vector._components.Length);
 
-                for (int i = 0; i < vector2.size; i++)
+                for (int i = 0; i < vector._components.Length; i++)
                 {
-                    vectorDifference[i] = vec.vector[i] + vector2.vector[i];
+                    _components[i] -= vector._components[i];
                 }
             }
-
-            return new Vector(vectorDifference);
         }
 
-        public Vector GetProduct(Vector vector2)
+        public void GetProduct(double scalar)
         {
-            int[] vectorProduct = new int[Math.Max(size, vector2.size)];
-
-            if (size >= vector2.size)
+            for (int i = 0; i < _components.Length; i++)
             {
-                Vector vec = new Vector(size, vector2.vector);
-
-                for (int i = 0; i < size; i++)
-                {
-                    vectorProduct[i] = vector[i] + vec.vector[i];
-                }
+                _components[i] *= scalar;
             }
-
-            if (size < vector2.size)
-            {
-                Vector vec = new Vector(vector2.size, vector);
-
-                for (int i = 0; i < vector2.size; i++)
-                {
-                    vectorProduct[i] = vec.vector[i] + vector2.vector[i];
-                }
-            }
-
-            return new Vector(vectorProduct);
         }
 
-        public Vector GetRiversal()
+        public void GetReversal()
         {
-            int[] vectorRiversal = new int[size];
-
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < _components.Length; i++)
             {
-                vectorRiversal[i] = this.vector[i] * -1;
+                GetProduct(-1);
             }
-
-            return new Vector(vectorRiversal);
         }
+
         public double GetLength()
         {
             double squaresSum = 0;
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < _components.Length; i++)
             {
-                squaresSum += Math.Pow(vector[i], 2);
+                squaresSum += _components[i] * _components[i];
             }
 
             return Math.Sqrt(squaresSum);
         }
 
-        public int? GetComponent(int index)
+        public double this[int index]
         {
-            if (index < size)
+            get
             {
-                return vector[index];
+                if (index <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("");
+                }
+                return _components[index];
             }
 
-            return null;
-        }
-
-        public Vector SetComponent(int index, int component)
-        {
-            if (index < size)
+            set
             {
-                int[] vectorRiversal = vector;
-
-                vectorRiversal[index] = component;
-
-                return new Vector(vectorRiversal);
+                if (index <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("");
+                }
+                _components[index] = value;
             }
-
-            return new Vector(vector);
         }
 
         public override int GetHashCode()
@@ -217,9 +165,9 @@ namespace VectorTask
             int prime = 37;
             int hash = 1;
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < _components.Length; i++)
             {
-                hash = prime * hash + vector[i];
+                hash = (int)(prime * hash + _components[i]);
             }
 
             return hash;
@@ -232,106 +180,42 @@ namespace VectorTask
                 return true;
             }
 
-            if (ReferenceEquals(o, null) || o.GetType() != GetType())
+            if (o is null || o.GetType() != GetType())
             {
                 return false;
             }
 
             Vector v = (Vector)o;
 
-            if (v.size == size)
+            if (v._components.Length != _components.Length)
             {
-                for (int i = 0; i < size; i++)
+                return false;
+            }
+
+            for (int i = 0; i < _components.Length; i++)
+            {
+                if (v._components[i] != _components[i])
                 {
-                    if (v.vector[i] != vector[i])
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
-            return vector == v.vector;
+            return true;
         }
 
-        public static Vector GetSum(Vector vector1, Vector vector2)
+        public static void GetSum(Vector vector1, Vector vector2)
         {
-            int[] vectorSum = new int[Math.Max(vector1.size, vector2.size)];
-
-            if (vector1.size >= vector2.size)
-            {
-                Vector vec = new Vector(vector1.size, vector2.vector);
-
-                for (int i = 0; i < vector1.size; i++)
-                {
-                    vectorSum[i] = vector1.vector[i] + vec.vector[i];
-                }
-            }
-
-            if (vector1.size < vector2.size)
-            {
-                Vector vec = new Vector(vector2.size, vector1.vector);
-
-                for (int i = 0; i < vector2.size; i++)
-                {
-                    vectorSum[i] = vec.vector[i] + vector2.vector[i];
-                }
-            }
-
-            return new Vector(vectorSum);
+            vector1.GetSum(vector2);
         }
 
-        public static Vector GetDifference(Vector vector1, Vector vector2)
+        public static void GetDifference(Vector vector1, Vector vector2)
         {
-            int[] vectorDifference = new int[Math.Max(vector1.size, vector2.size)];
-
-            if (vector1.size >= vector2.size)
-            {
-                Vector vec = new Vector(vector1.size, vector2.vector);
-
-                for (int i = 0; i < vector1.size; i++)
-                {
-                    vectorDifference[i] = vector1.vector[i] + vec.vector[i];
-                }
-            }
-
-            if (vector1.size < vector2.size)
-            {
-                Vector vec = new Vector(vector2.size, vector1.vector);
-
-                for (int i = 0; i < vector2.size; i++)
-                {
-                    vectorDifference[i] = vec.vector[i] + vector2.vector[i];
-                }
-            }
-
-            return new Vector(vectorDifference);
+            vector1.GetDifference(vector2);
         }
 
-        public static Vector GetProduct(Vector vector1, Vector vector2)
+        public static void GetProduct(Vector vector, double scalar)
         {
-            int[] vectorProduct = new int[Math.Max(vector1.size, vector2.size)];
-
-            if (vector1.size >= vector2.size)
-            {
-                Vector vec = new Vector(vector1.size, vector2.vector);
-
-                for (int i = 0; i < vector1.size; i++)
-                {
-                    vectorProduct[i] = vector1.vector[i] + vec.vector[i];
-                }
-            }
-
-            if (vector1.size < vector2.size)
-            {
-                Vector vec = new Vector(vector2.size, vector1.vector);
-
-                for (int i = 0; i < vector2.size; i++)
-                {
-                    vectorProduct[i] = vec.vector[i] + vector2.vector[i];
-                }
-            }
-
-            return new Vector(vectorProduct);
+            vector.GetProduct(scalar);
         }
     }
 }

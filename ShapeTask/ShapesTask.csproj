@@ -36,8 +36,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AreaComparer.cs" />
+    <Compile Include="Circle.cs" />
+    <Compile Include="PerimeterComparer.cs" />
+    <Compile Include="Rectangle.cs" />
     <Compile Include="Shape.cs" />
-    <Compile Include="Shapes.cs" />
+    <Compile Include="ShapesMain.cs" />
+    <Compile Include="Square.cs" />
+    <Compile Include="Triangle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

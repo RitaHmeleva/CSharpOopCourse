@@ -6,31 +6,47 @@ namespace VectorTask
     {
         static void Main(string[] args)
         {
-            int n = 1;
-            int[] array = { 1, 4, 8 };
-            int[] array2 = { 7, 4 };
+            int size = 1;
+            double[] components = { 1, 4, 8 };
+            double[] components2 = { 7, 4 };
 
-            Vector vector = new Vector(n);
-            Vector vector3 = new Vector(array);
-            Vector vector4 = new Vector(n, array2);
+            Vector vector = new Vector(size);
+            Vector vector3 = new Vector(components);
+            Vector vector4 = new Vector(size, components2);
             Vector vector2 = new Vector(vector3);
 
-            Console.WriteLine(vector + "   Размер:" + vector.GetSize());
-            Console.WriteLine(vector3 + "   Размер:" + vector3.GetSize());
-            Console.WriteLine(vector4 + "   Размер:" + vector4.GetSize());
-            Console.WriteLine(vector2 + "   Размер:" + vector2.GetSize());
+            Console.WriteLine(vector + "    Размер: " + vector.GetSize);
+            Console.WriteLine(vector3 + "   Размер: " + vector3.GetSize);
+            Console.WriteLine(vector4 + "   Размер: " + vector4.GetSize);
+            Console.WriteLine(vector2 + "   Размер: " + vector2.GetSize);
 
-            Console.WriteLine("Прибавление: " + vector2.GetSum(vector4));
-            Console.WriteLine("Вычитание: " + vector2.GetDifference(vector4));
-            Console.WriteLine("Произведение: " + vector2.GetProduct(vector4));
-            Console.WriteLine("Разворот: " + vector2.GetRiversal());
+            vector2.GetSum(vector4);
+            Console.WriteLine("Прибавление: " + vector2);
+
+            vector2.GetDifference(vector4);
+            Console.WriteLine("Вычитание: " + vector2);
+
+            vector2.GetProduct(5);
+            Console.WriteLine("Произведение: " + vector2);
+
+            vector2.GetReversal();
+            Console.WriteLine("Разворот: " + vector2);
+
             Console.WriteLine("Длина: " + vector2.GetLength());
-            Console.WriteLine("Компонента по индексу: " + vector2.GetComponent(2));
-            Console.WriteLine("Компонента по индексу: " + vector2.SetComponent(1, 1));
 
-            Console.WriteLine("Прибавление: " + Vector.GetSum(vector3, vector4));
-            Console.WriteLine("Вычитание: " + Vector.GetDifference(vector3, vector4));
-            Console.WriteLine("Произведение: " + Vector.GetProduct(vector3, vector4));
+            Console.WriteLine("Компонента по индексу: " + vector2[2]);
+
+            vector2[2] = 13;
+            Console.WriteLine("Компонента по индексу: " + vector2);
+
+            Vector.GetSum(vector3, vector4);
+            Console.WriteLine("Прибавление: " + vector3);
+
+            Vector.GetDifference(vector3, vector4);
+            Console.WriteLine("Вычитание: " + vector3);
+
+            Vector.GetProduct(vector3, 2);
+            Console.WriteLine("Произведение: " + vector3);
 
             Console.WriteLine("Равенство: " + Equals(vector3, vector4));
 
