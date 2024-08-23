@@ -71,43 +71,27 @@ namespace VectorTask
 
         public void GetSum(Vector vector)
         {
-            if (_components.Length >= vector._components.Length)
-            {
-                for (int i = 0; i < vector._components.Length; i++)
-                {
-                    _components[i] += vector._components[i];
-                }
-            }
-
-            else
+            if (_components.Length < vector._components.Length)
             {
                 Array.Resize(ref _components, vector._components.Length);
+            }
 
-                for (int i = 0; i < vector._components.Length; i++)
-                {
-                    _components[i] += vector._components[i];
-                }
+            for (int i = 0; i < vector._components.Length; i++)
+            {
+                _components[i] += vector._components[i];
             }
         }
 
         public void GetDifference(Vector vector)
         {
-            if (_components.Length >= vector._components.Length)
-            {
-                for (int i = 0; i < vector._components.Length; i++)
-                {
-                    _components[i] -= vector._components[i];
-                }
-            }
-
-            else
+            if (_components.Length < vector._components.Length)
             {
                 Array.Resize(ref _components, vector._components.Length);
+            }
 
-                for (int i = 0; i < vector._components.Length; i++)
-                {
-                    _components[i] -= vector._components[i];
-                }
+            for (int i = 0; i < vector._components.Length; i++)
+            {
+                _components[i] -= vector._components[i];
             }
         }
 
