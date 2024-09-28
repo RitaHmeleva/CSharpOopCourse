@@ -7,7 +7,6 @@ class Range
     public double To { get; set; }
 
     public Range(double from, double to)
-
     {
         From = from;
         To = to;
@@ -52,15 +51,12 @@ class Range
                 return new Range[] { new Range(From, To) };
             }
 
-            else if (range.To >= To)
+            if (range.To >= To)
             {
                 return new Range[] { };
             }
 
-            else
-            {
-                return new Range[] { new Range(range.To, To) };
-            }
+            return new Range[] { new Range(range.To, To) };
         }
 
         if (range.To >= To)
@@ -70,7 +66,7 @@ class Range
                 return new Range[] { new Range(From, To) };
             }
 
-            else if (range.From >= From)
+            if (range.From >= From)
             {
                 return new Range[] { new Range(From, range.From) };
             }
