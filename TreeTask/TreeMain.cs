@@ -2,11 +2,16 @@
 
 internal class TreeMain
 {
+    static void PrintData(int data)
+    {
+        Console.WriteLine(data);
+    }
+
     static void Main(string[] args)
     {
-        BinaryTree<int> tree = new BinaryTree<int>();
+        BinarySearchTree<int> tree = new BinarySearchTree<int>();
 
-        tree.InsertRoot(12);
+        tree.InsertNode(12);
         tree.InsertNode(3);
         tree.InsertNode(14);
         tree.InsertNode(1);
@@ -22,22 +27,23 @@ internal class TreeMain
         tree.InsertNode(8);
         tree.InsertNode(11);
 
-        Console.WriteLine(tree.ToString());
+        Console.WriteLine(tree);
 
-        tree.DeleteNode(5);
+        tree.DeleteNode(12);
         Console.WriteLine("Дерево: ");
-        Console.WriteLine(tree.ToString());
+        Console.WriteLine(tree);
 
         Console.WriteLine("Обход в глубину с рекурсией: ");
-        tree.ReversalDepthTraversal(tree.root);
 
-        Console.WriteLine("Обход в ширину: ");
-        tree.WidthTraversal();
+        tree.RecursionDepthTraversal(PrintData);
 
         Console.WriteLine("Обход в глубину: ");
-        tree.DepthTraversal();
+        tree.DepthTraversal(PrintData);
 
-        Console.WriteLine("Число элементов: " + tree.GetCount());
+        Console.WriteLine("Обход в ширину: ");
+        tree.WidthTraversal(PrintData);
+
+        Console.WriteLine("Число элементов: " + tree.Count);
 
         Console.ReadLine();
     }
