@@ -1,4 +1,4 @@
-﻿namespace ShapesTask;
+﻿namespace ShapesTask.Shapes;
 
 public class Circle : IShape
 {
@@ -44,14 +44,14 @@ public class Circle : IShape
         return hash;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (ReferenceEquals(o, this))
         {
             return true;
         }
 
-        if (ReferenceEquals(o, null) || o.GetType() != GetType())
+        if (o is null || o.GetType() != GetType())
         {
             return false;
         }

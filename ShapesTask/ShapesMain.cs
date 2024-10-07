@@ -1,5 +1,7 @@
 ﻿namespace ShapesTask;
 
+using ShapesTask.Shapes;
+
 internal class ShapesMain
 {
     static void Main(string[] args)

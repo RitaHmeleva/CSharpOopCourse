@@ -36,9 +36,13 @@ public class Triangle : IShape
 
     public double GetArea()
     {
-        double semiperimeter = GetPerimeter() / 2;
+        double side1 = GetSideLength(X1, Y1, X2, Y2);
+        double side2 = GetSideLength(X1, Y1, X3, Y3);
+        double side3 = GetSideLength(X2, Y2, X3, Y3);
+        
+        double semiperimeter = (side1 + side2 + side3) / 2;
 
-        return Math.Round(Math.Sqrt(semiperimeter * (semiperimeter - GetSideLength(X1, Y1, X2, Y2)) * (semiperimeter - GetSideLength(X1, Y1, X3, Y3)) * (semiperimeter - GetSideLength(X2, Y2, X3, Y3))), 4);
+        return Math.Sqrt(semiperimeter * (semiperimeter - side1) * (semiperimeter - side2) * (semiperimeter - side3));
     }
 
     private static double GetSideLength(double x1, double y1, double x2, double y2)
@@ -53,7 +57,7 @@ public class Triangle : IShape
 
     public override string ToString()
     {
-        return "Треугольник (" + X1 + ", " + Y1 + ", " + X2 + ", " + Y2 + ", " + X3 + ", " + Y2 + ". Ширина: " + GetWidth() + "; Высота: " + GetHeight() + "; Площадь: " + GetArea() + "; Периметр: " + GetPerimeter();
+        return "Треугольник (" + X1 + ", " + Y1 + ", " + X2 + ", " + Y2 + ", " + X3 + ", " + Y3 + ". Ширина: " + GetWidth() + "; Высота: " + GetHeight() + "; Площадь: " + GetArea() + "; Периметр: " + GetPerimeter();
     }
 
     public override int GetHashCode()
@@ -71,14 +75,14 @@ public class Triangle : IShape
         return hash;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (ReferenceEquals(o, this))
         {
             return true;
         }
 
-        if (ReferenceEquals(o, null) || o.GetType() != GetType())
+        if (o is null || o.GetType() != GetType())
         {
             return false;
         }

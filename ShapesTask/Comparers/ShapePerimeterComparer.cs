@@ -2,7 +2,7 @@
 
 class ShapePerimeterComparer : IComparer<IShape>
 {
-    public int Compare(IShape shape1, IShape shape2)
+    public int Compare(IShape? shape1, IShape? shape2)
     {
         if (shape1 is null)
         {
