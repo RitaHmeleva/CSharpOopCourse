@@ -1,4 +1,4 @@
-﻿namespace ShapesTask;
+﻿namespace ShapesTask.Shapes;
 
 class ShapePerimeterComparer : IComparer<IShape>
 {
