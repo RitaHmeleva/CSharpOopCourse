@@ -10,26 +10,32 @@ class SinglyLinkedList<T>
 
     public SinglyLinkedList()
     {
-        Count = 0;
+
     }
 
     public override string ToString()
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        string s = null;
+        stringBuilder.Append('(');
 
         for (ListItem<T> currentItem = _head; currentItem != null; currentItem = currentItem.Next)
         {
-            stringBuilder.Append(currentItem.Data + " ");
-
+            stringBuilder.Append(currentItem.Data + ", ");
         }
+
+        stringBuilder.Append(')');
 
         return stringBuilder.ToString();
     }
 
     public T GetFirstElement()
     {
+        if (_head == null)
+        {
+            throw new NullReferenceException();
+        }
+
         return _head.Data;
     }
 
@@ -49,7 +55,7 @@ class SinglyLinkedList<T>
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Index should be between 0 and {Count - 1}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count - 1}");
         }
     }
 
@@ -76,20 +82,20 @@ class SinglyLinkedList<T>
 
         Count--;
 
-        T removedValue = _head.Data;
+        T removedData = _head.Data;
 
         if (index == 0)
         {
             _head = _head.Next;
 
-            return removedValue;
+            return removedData;
         }
 
         ListItem<T> previousItem = GetItem(index - 1);
-        removedValue = previousItem.Next.Data;
+        removedData = previousItem.Next.Data;
         previousItem.Next = previousItem.Next.Next;
 
-        return removedValue;
+        return removedData;
     }
 
     public void AddFirst(T data)
@@ -103,7 +109,7 @@ class SinglyLinkedList<T>
     {
         if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Index should be between 0 and {Count}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count}");
         }
 
         Count++;
@@ -130,7 +136,7 @@ class SinglyLinkedList<T>
             throw new ArgumentNullException(nameof(data), "Data should not be null");
         }
 
-        for (ListItem<T> currentItem = _head, previousItem = null; currentItem != null; previousItem = currentItem, currentItem = currentItem.Next)
+        for (ListItem<T>? currentItem = _head, previousItem = null; currentItem != null; previousItem = currentItem, currentItem = currentItem.Next)
         {
             if (currentItem.Data.Equals(data))
             {
@@ -156,27 +162,26 @@ class SinglyLinkedList<T>
     {
         if (_head == null)
         {
-            throw new Exception("Cant remove element from empty list");
+            throw new Exception("Can't remove element from empty list");
         }
 
-        ListItem<T> removedElement = _head;
+        ListItem<T> removedItem = _head;
 
         _head = _head.Next;
 
         Count--;
 
-        return removedElement.Data;
+        return removedItem.Data;
     }
 
     public void Reverse()
     {
-        ListItem<T> currentItem = _head;
+        ListItem<T>? currentItem = _head;
         ListItem<T> previousItem = null;
-        ListItem<T> nextItem;
 
         while (currentItem != null)
         {
-            nextItem = currentItem.Next;
+            ListItem<T>? nextItem = currentItem.Next;
             currentItem.Next = previousItem;
             previousItem = currentItem;
             currentItem = nextItem;
@@ -189,28 +194,30 @@ class SinglyLinkedList<T>
     {
         SinglyLinkedList<T> newList = new SinglyLinkedList<T>();
 
-        if (_head != null)
+        if (_head == null)
         {
-            ListItem<T> item = _head;
+            return newList;
+        }
 
-            ListItem<T> newItem = new ListItem<T>(item.Data);
-            newList._head = newItem;
+        ListItem<T>? item = _head;
 
-            ListItem<T> newPrevItem = newItem;
+        ListItem<T> copyItem = new ListItem<T>(item.Data);
+        newList._head = copyItem;
+
+        ListItem<T> newPreviousItem = copyItem;
+
+        item = item.Next;
+
+        while (item != null)
+        {
+            copyItem = new ListItem<T>(item.Data);
+            newPreviousItem.Next = copyItem;
+
+            newPreviousItem = copyItem;
 
             item = item.Next;
 
-            while (item != null)
-            {
-                newItem = new ListItem<T>(item.Data);
-                newPrevItem.Next = newItem;
-
-                newPrevItem = newItem;
-
-                item = item.Next;
-
-                newList.Count++;
-            }
+            newList.Count++;
         }
 
         return newList;

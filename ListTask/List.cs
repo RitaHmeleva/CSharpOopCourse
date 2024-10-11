@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 
 namespace ListTask
 {
@@ -18,51 +21,44 @@ namespace ListTask
             Data = data;
             Next = next;
         }
-
-        public override string ToString()
-        {
-            return Data.ToString();
-        }
     }
 
     class SinglyLinkedList<T>
     {
-        private ListItem<T> head;
+        private ListItem<T> _head;
 
-        private int count;
+        public int Count { get; private set; }
 
         public SinglyLinkedList()
         {
-            count = 0;
+            Count = 0;
         }
 
         public override string ToString()
         {
+            StringBuilder stringBuilder = new StringBuilder();
+
             string s = null;
 
-            for (ListItem<T> currentItem = head; currentItem != null; currentItem = currentItem.Next)
+            for (ListItem<T> currentItem = _head; currentItem != null; currentItem = currentItem.Next)
             {
-                s += currentItem.Data + " ";
+                stringBuilder.Append(currentItem.Data + " ");
+
             }
 
-            return s;
+            return stringBuilder.ToString();
         }
 
-        public int GetCount()
+        public T GetFirstElement()
         {
-            return count;
-        }
-
-        public ListItem<T> GetFirstElement()
-        {
-            return head;
+            return _head.Data;
         }
 
         private ListItem<T> GetItem(int index)
         {
-            ListItem<T> currentItem = head;
+            ListItem<T> currentItem = _head;
 
-            for (int i = 0; i < index; i++)
+            for (int i = 1; i <= index; i++)
             {
                 currentItem = currentItem.Next;
             }
@@ -70,231 +66,162 @@ namespace ListTask
             return currentItem;
         }
 
+        private void CheckIndex(int index)
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index should be between 0 and {Count - 1}");
+            }
+        }
+
         public T this[int index]
         {
             get
             {
-                if (index < 0)
-                {
-                    throw new ArgumentOutOfRangeException("");
-                }
+                CheckIndex(index);
 
-                if (index >= count)
-                {
-                    throw new ArgumentOutOfRangeException("");
-                }
-
-                ListItem<T> currentItem = GetItem(index);
-
-                return currentItem.Data;
+                return GetItem(index).Data;
             }
 
             set
             {
-                if (index < 0)
-                {
-                    throw new ArgumentOutOfRangeException("");
-                }
+                CheckIndex(index);
 
-                if (index >= count)
-                {
-                    throw new ArgumentOutOfRangeException("");
-                }
-
-                ListItem<T> currentItem = GetItem(index);
-
-                currentItem.Data = value;
+                GetItem(index).Data = value;
             }
         }
 
-        public T GetData(int index)
+        public T RemoveElement(int index)
         {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
+            CheckIndex(index);
 
-            if (index >= count)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
+            Count--;
 
-            ListItem<T> currentItem = GetItem(index);
-
-            return currentItem.Data;
-        }
-
-        public T SetData(int index, T data)
-        {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            if (index >= count)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            ListItem<T> currentItem = GetItem(index);
-
-            T oldValue = currentItem.Data;
-            currentItem.Data = data;
-
-            return oldValue;
-        }
-
-        public T DeleteElement(int index)
-        {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            if (index >= count)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            count--;
-
-            ListItem<T> currentItem = head;
-            ListItem<T> previousItem = head;
-
-            T deletedValue = currentItem.Data;
+            T removedValue = _head.Data;
 
             if (index == 0)
             {
-                head = currentItem.Next;
+                _head = _head.Next;
 
-                return deletedValue;
+                return removedValue;
             }
 
-            for (int i = 0; i < index; i++)
-            {
-                previousItem = currentItem;
-                currentItem = currentItem.Next;
-            }
-
-            deletedValue = previousItem.Next.Data;
-            previousItem.Next = currentItem.Next;
-
-            return deletedValue;
+            ListItem<T> previousItem = GetItem(index - 1);
+            removedValue = previousItem.Next.Data;
+            previousItem.Next = previousItem.Next.Next;
+           
+            return removedValue;
         }
 
-        public void AddFirst(T element)
+        public void AddFirst(T data)
         {
-            head = new ListItem<T>(element, head);
+            _head = new ListItem<T>(data, _head);
 
-            count++;
+            Count++;
         }
 
-        public void AddByIndex(int index, T element)
+        public void AddByIndex(int index, T data)
         {
-            if (index < 0)
+            if (index < 0 || index > Count)
             {
-                throw new ArgumentOutOfRangeException("");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index should be between 0 and {Count}");
             }
 
-            if (index >= count)
-            {
-                throw new ArgumentOutOfRangeException("");
-            }
+            Count++;
 
-            count++;
-
-            ListItem<T> currentItem = head;
-            ListItem<T> previousItem = head;
-            ListItem<T> temp = new ListItem<T>(element);
+            ListItem<T> newItem = new ListItem<T>(data);
 
             if (index == 0)
             {
-                head = temp;
+                newItem.Next = _head;
+                _head = newItem;
             }
             else
             {
-                for (int i = 0; i < index; i++)
-                {
-                    previousItem = currentItem;
-                    currentItem = currentItem.Next;
-                }
-
-                previousItem.Next = temp;
+                ListItem<T> previousItem = GetItem(index - 1);
+                newItem.Next = previousItem.Next;
+                previousItem.Next = newItem;
             }
-
-            temp.Next = currentItem;
         }
 
-        public bool DeleteData(T data)
+        public bool RemoveData(T data)
         {
-            int changesCount = 0;
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data), "Data should not be null");
+            }
 
-            for (ListItem<T> currentItem = head, previousItem = null; currentItem != null; previousItem = currentItem, currentItem = currentItem.Next)
+            for (ListItem<T> currentItem = _head, previousItem = null; currentItem != null; previousItem = currentItem, currentItem = currentItem.Next)
             {
                 if (currentItem.Data.Equals(data))
                 {
-                    previousItem.Next = currentItem.Next;
-                    changesCount++;
-                    count--;
-                }
-            }
+                    if (previousItem == null)
+                    {
+                        _head = currentItem.Next;
+                    }
+                    else
+                    {
+                        previousItem.Next = currentItem.Next;
+                    }
 
-            if (changesCount > 0)
-            {
-                return true;
+                    Count--;
+
+                    return true;
+                }
             }
 
             return false;
         }
 
-        public ListItem<T> GetDeletedFirstElement()
+        public T RemoveFirstElement()
         {
-            ListItem<T> deletedElement = head;
+            if (_head == null)
+            {
+                throw new Exception("Cant remove element from empty list");
+            }
 
-            head = head.Next;
+            ListItem<T> removedElement = _head;
 
-            count--;
+            _head = _head.Next;
 
-            return deletedElement;
+            Count--;
+
+            return removedElement.Data;
         }
 
         public void Reverse()
         {
-            ListItem<T> currentItem = head;
+            ListItem<T> currentItem = _head;
 
-            for (int i = 1; i <= count/2; i++)
-            {
-                ListItem<T> lastItem = GetItem(count - i);
-                T item = currentItem.Data;
-                currentItem.Data = lastItem.Data;
-                lastItem.Data = item;
-                currentItem = currentItem.Next;
-            }
+
         }
 
         public SinglyLinkedList<T> GetCopy()
         {
             SinglyLinkedList<T> newList = new SinglyLinkedList<T>();
 
-            ListItem<T> item = head;
-            ListItem<T> newPrevItem = null;
-
-            while (item != null)
+            if (_head != null)
             {
-                ListItem<T> newItem = new ListItem<T>(item.Data, null);
+                ListItem<T> item = _head;
 
-                if(newPrevItem != null)
-                {
-                    newPrevItem.Next = newItem;
-                }
-                else
-                {
-                    newList.head = newItem;
-                }
+                ListItem<T> newItem = new ListItem<T>(item.Data);
+                newList._head = newItem;
 
-                newPrevItem = newItem;
+                ListItem<T> newPrevItem = newItem;
 
                 item = item.Next;
+
+                while (item != null)
+                {
+                    newItem = new ListItem<T>(item.Data);
+                    newPrevItem.Next = newItem;
+
+                    newPrevItem = newItem;
+
+                    item = item.Next;
+
+                    newList.Count++;
+                }
             }
 
             return newList;

@@ -1,27 +1,37 @@
-﻿namespace GraphTask;
+﻿using System.Xml.Linq;
+
+namespace GraphTask;
 
 internal class GraphMain
 {
+    static void PrintNode(int node)
+    {
+        Console.WriteLine(node);
+    }
+
     static void Main(string[] args)
     {
-        int[,] arrayGraph =
+        int[,] array =
     {
         { 0, 1, 1, 1, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 1, 0, 0, 0, 1, 1, 0, 0, 0 },
         { 1, 0, 0, 0, 0, 1, 0, 0, 0 },
-        { 0, 0, 1, 0, 0, 0, 1, 0, 0 },
+        { 0, 0, 1, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 1, 1, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { 0, 0, 0, 0, 0, 0, 0, 1, 0 }
     };
 
-        Graph graph = new Graph(arrayGraph);
-        
-        graph.WidthTraversal();
+        Graph matrix = new Graph(array);
 
-        graph.DepthTraversal();
+        Console.WriteLine("Visit nodes:");
+        Console.WriteLine("Обход в ширину:");
+        matrix.WidthTraversal(PrintNode);
+
+        Console.WriteLine("Обход в глубину:");
+        matrix.DepthTraversal(PrintNode);
 
         Console.ReadLine();
     }

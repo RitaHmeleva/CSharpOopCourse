@@ -7,8 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VectorTask2\VectorTask2.csproj" />
-  </ItemGroup>
-
 </Project>

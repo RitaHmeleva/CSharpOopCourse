@@ -36,6 +36,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ArrayListTask\ArrayList.cs">
+      <Link>ArrayList.cs</Link>
+    </Compile>
     <Compile Include="List.cs" />
     <Compile Include="ListMain.cs" />
   </ItemGroup>
