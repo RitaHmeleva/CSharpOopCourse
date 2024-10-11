@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Drawing;
 
 namespace VectorTask;
 
@@ -10,7 +10,7 @@ public class Vector
     {
         if (size <= 0)
         {
-            throw new ArgumentException(nameof(size), $"Size {size} should be > 0");
+            throw new ArgumentException($"Size {size} should be > 0", nameof(size));
         }
 
         _components = new double[size];
@@ -18,11 +18,6 @@ public class Vector
 
     public Vector(Vector vector)
     {
-        if (vector._components.Length == 0)
-        {
-            throw new ArgumentException($"Size {vector.Size} should be > 0");
-        }
-
         _components = new double[vector.Size];
         Array.Copy(vector._components, _components, Size);
     }
@@ -31,7 +26,7 @@ public class Vector
     {
         if (components.Length == 0)
         {
-            throw new ArgumentException($"Size {components.Length} should be > 0");
+            throw new ArgumentException($"Size {components.Length} should be > 0", nameof(components));
         }
 
         _components = new double[components.Length];
@@ -43,25 +38,22 @@ public class Vector
     {
         if (size <= 0)
         {
-            throw new ArgumentException(nameof(size), $"Size {size} should be > 0");
+            throw new ArgumentException($"Size {size} should be > 0", nameof(size));
         }
 
         _components = new double[size];
 
-        Array.Copy(components, _components, size < components.Length ? size : components.Length);
+        Array.Copy(components, _components, Math.Min(size, components.Length));
     }
 
-    public int Size
-    {
-        get { return _components.Length; }
-    }
+    public int Size => _components.Length;
 
     public override string ToString()
     {
         return $"{{{string.Join(", ", _components)}}}";
     }
 
-    public void Sum(Vector vector)
+    public void Add(Vector vector)
     {
         if (Size < vector.Size)
         {
@@ -74,7 +66,7 @@ public class Vector
         }
     }
 
-    public void Difference(Vector vector)
+    public void Subtract(Vector vector)
     {
         if (Size < vector.Size)
         {
@@ -87,7 +79,7 @@ public class Vector
         }
     }
 
-    public void Product(double scalar)
+    public void Multiply(double scalar)
     {
         for (int i = 0; i < Size; i++)
         {
@@ -95,21 +87,18 @@ public class Vector
         }
     }
 
-    public void Reversal()
+    public void Reverse()
     {
-        for (int i = 0; i < Size; i++)
-        {
-            Product(-1);
-        }
+        Multiply(-1);
     }
 
     public double GetLength()
     {
         double squaresSum = 0;
 
-        for (int i = 0; i < Size; i++)
+        foreach (double component in _components)
         {
-            squaresSum += _components[i] * _components[i];
+            squaresSum += component * component;
         }
 
         return Math.Sqrt(squaresSum);
@@ -119,14 +108,9 @@ public class Vector
     {
         get
         {
-            if (index < 0)
+            if (index < 0 || index >= Size)
             {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            if (index > Size - 1)
-            {
-                throw new ArgumentOutOfRangeException("");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Size - 1}");
             }
 
             return _components[index];
@@ -134,14 +118,9 @@ public class Vector
 
         set
         {
-            if (index < 0)
+            if (index < 0 || index >= Size)
             {
-                throw new ArgumentOutOfRangeException("");
-            }
-
-            if (index > Size - 1)
-            {
-                throw new ArgumentOutOfRangeException("");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Size - 1}");
             }
 
             _components[index] = value;
@@ -153,15 +132,15 @@ public class Vector
         const int prime = 37;
         int hash = 1;
 
-        foreach (int i in _components)
+        foreach (double component in _components)
         {
-            hash = (prime * hash + _components[i]).GetHashCode();
+            hash = prime * hash + component.GetHashCode();
         }
 
         return hash;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (ReferenceEquals(o, this))
         {
@@ -193,42 +172,33 @@ public class Vector
 
     public static Vector GetSum(Vector vector1, Vector vector2)
     {
-        Vector vector = new Vector(vector1);
+        Vector sumVector = new Vector(vector1);
 
-        vector.Sum(vector2);
+        sumVector.Add(vector2);
 
-        return vector;
+        return sumVector;
     }
 
     public static Vector GetDifference(Vector vector1, Vector vector2)
     {
-        Vector vector = new Vector(vector1);
+        Vector differenceVector = new Vector(vector1);
 
-        vector.Difference(vector2);
+        differenceVector.Subtract(vector2);
 
-        return vector;
+        return differenceVector;
     }
 
-    public static Vector GetProduct(Vector vector1, Vector vector2)
+    public static double GetScalarProduct(Vector vector1, Vector vector2)
     {
-        double[] vectorProduct = new double[Math.Max(vector1.Size, vector2.Size)];
+        double scalarProduct = 0;
 
-        if (vector1.Size >= vector2.Size)
+        int minVectorSize = Math.Min(vector1.Size, vector2.Size);
+
+        for (int i = 0; i < minVectorSize; i++)
         {
-            for (int i = 0; i < vector2.Size; i++)
-            {
-                vectorProduct[i] += vector1._components[i] * vector2._components[i];
-            }
+            scalarProduct += vector1._components[i] * vector2._components[i];
         }
 
-        if (vector1.Size < vector2.Size)
-        {
-            for (int i = 0; i < vector1.Size; i++)
-            {
-                vectorProduct[i] += vector1._components[i] * vector2._components[i];
-            }
-        }
-
-        return new Vector(vectorProduct);
+        return scalarProduct;
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace ShapesTask.Shapes;
+﻿namespace ShapesTask;
+
+using Shapes;
+using Comparers;
 
 internal class ShapesMain
 {

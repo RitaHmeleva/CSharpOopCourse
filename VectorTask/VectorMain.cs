@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace VectorTask;
 
-namespace VectorTask;
-
-internal class VectorTest
+internal class VectorMain
 {
     static void Main(string[] args)
     {
@@ -26,16 +24,16 @@ internal class VectorTest
         Console.WriteLine(vector4 + "   Размер: " + vector4.Size);
         Console.WriteLine(vector2 + "   Размер: " + vector2.Size);
 
-        vector2.Sum(vector4);
+        vector2.Add(vector4);
         Console.WriteLine("Прибавление: " + vector2);
 
-        vector2.Difference(vector4);
+        vector2.Subtract(vector4);
         Console.WriteLine("Вычитание: " + vector2);
 
-        vector2.Product(5);
+        vector2.Multiply(5);
         Console.WriteLine("Произведение: " + vector2);
 
-        vector2.Reversal();
+        vector2.Reverse();
         Console.WriteLine("Разворот: " + vector2);
 
         Console.WriteLine("Длина: " + vector2.GetLength());
@@ -49,7 +47,7 @@ internal class VectorTest
 
         Console.WriteLine("Вычитание: " + Vector.GetDifference(vector3, vector4));
 
-        Console.WriteLine("Произведение: " + Vector.GetProduct(vector3, vector4));
+        Console.WriteLine("Произведение: " + Vector.GetScalarProduct(vector3, vector4));
 
         Console.WriteLine("Равенство: " + Equals(vector3, vector4));
 
