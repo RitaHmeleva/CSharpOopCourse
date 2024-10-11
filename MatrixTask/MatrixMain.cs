@@ -1,5 +1,4 @@
-﻿using System;
-using VectorTask;
+﻿using VectorTask;
 
 namespace MatrixTask;
 
@@ -12,9 +11,8 @@ internal class MatrixMain
 
         double[] components1 = { 1, 4, 3 };
         double[] components2 = { 2, 9, 6 };
-        double[] components3 = { 3, 0, 2 };
+        double[] components3 = { 3, 0, 2, 8 };
         double[] components4 = { 2, 0, 1, 2 };
-
 
         double[,] vectors1 =
         {
@@ -25,7 +23,7 @@ internal class MatrixMain
         };
 
         double[,] vectors2 =
-{
+        {
             { 4, 5, 1},
             { 2, 2, 2 }
         };
@@ -54,36 +52,34 @@ internal class MatrixMain
 
         Console.WriteLine("Вектор-строка по индексу: " + matrix3.GetRow(2));
 
-        double[] vector = { 4, 4, 3, 8 };
+        Vector vector = new Vector(new double[] { 4, 4, 3, 8 });
         matrix3.SetRow(2, vector);
         Console.WriteLine("Задание вектор-строки по индексу: " + matrix3);
 
-        Console.WriteLine("Вектор-столбец по индексу: " + matrix3.GetColumn(2));
+        Console.WriteLine("Вектор-столбец по индексу: " + matrix4.GetColumn(2));
 
-        matrix3.Transpose();
-        Console.WriteLine("Транспонирование: " + matrix3);
+        matrix4.Transpose();
+        Console.WriteLine("Транспонирование: " + matrix4);
 
-        matrix3.Product(2);
+        matrix3.Multiply(2);
         Console.WriteLine("Произведение матрицы и скаляра: " + matrix3);
 
         Console.WriteLine(matrix3);
-        Console.WriteLine("Определитель матрицы: " + matrix3.Determinant());
+        Console.WriteLine("Определитель матрицы: " + matrix3.GetDeterminant());
 
-        matrix3.Product(components4);
-        Console.WriteLine("Произведение матрицы и вектора: " + matrix3);
+        Console.WriteLine("Произведение матрицы и вектора: " + matrix3.GetProduct(new Vector(components4)));
 
-        matrix3.Sum(matrix3);
+        matrix3.Add(matrix3);
         Console.WriteLine("Сумма матриц: " + matrix3);
 
-        matrix3.Difference(matrix4);
+        matrix3.Subtract(matrix3);
         Console.WriteLine("Разность матриц: " + matrix3);
 
-        Console.WriteLine("Сумма матриц: " + Matrix.GetSum(matrix3, matrix4));
+        Console.WriteLine("Сумма матриц: " + Matrix.GetSum(matrix4, matrix4));
 
-        Console.WriteLine("Разность матриц: " + Matrix.GetDifference(matrix3, matrix4));
+        Console.WriteLine("Разность матриц: " + Matrix.GetDifference(matrix3, matrix3));
 
-        Console.WriteLine("Произведение матриц: " + Matrix.GetProduct(matrix3, matrix4));
-
+        Console.WriteLine("Произведение матриц: " + Matrix.GetProduct(matrix4, matrix4));
 
         Console.ReadLine();
     }
