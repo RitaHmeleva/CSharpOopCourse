@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TemperatureTask.Views;
 
-namespace TemperatureTask.Views
+internal interface IMainForm
 {
-    internal interface IMainForm
-    {
-        public void SetSourceScales(List<string> scales);
+    void SetSourceScales(Dictionary<string, string> scales);
 
-        public void SetTargetScales(List<string> scales);
+    void SetTargetScales(Dictionary<string, string> scales);
 
-        public void SetSourceTemperature(double value);
+    void SetSourceTemperature(double value);
 
-        public void SetTargetTemperature(double value);
+    void SetTargetTemperature(double value);
 
-        public void SetSourceScale(int index);
+    void SetSourceScale(string scaleCode);
 
-        public void SetTargetScale(int index);
-    }
+    void SetTargetScale(string scaleCode);
 }

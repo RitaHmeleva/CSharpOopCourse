@@ -1,58 +1,72 @@
-﻿namespace TemperatureTask.Models
+﻿namespace TemperatureTask.Models;
+
+using Models.TemperatureScales;
+
+internal class MainModel
 {
-    internal class MainModel
+    private TemperatureModel _temperature;
+
+    private double TargetTemperature => GetTemperature(TargetScale);
+
+    private TemperatureScale SourceScale { get; set; }
+
+    private TemperatureScale TargetScale { get; set; }
+
+    public MainModel()
     {
-        public Temperature _temperature;
-        public TemperatureScale _targetScale;
+        _temperature = new TemperatureModel(100, "Celsius");
 
-        public double SourceTemperature => GetTemperature(SourceScale);
+        SourceScale = _temperature.GetScaleByCode("Celsius");
+        TargetScale = _temperature.GetScaleByCode("Fahrenheit");
+    }
 
-        public double TargetTemperature => GetTemperature(TargetScale);
+    public void SetSourceScale(TemperatureScale scale)
+    {
+        SourceScale = scale;
+    }
 
-        public TemperatureScale SourceScale { get; set; }
+    public void SetSourceScale(string scaleCode)
+    { 
+        SourceScale = _temperature.GetScaleByCode(scaleCode);
+    }
 
-        public TemperatureScale TargetScale { get; set; }
+    public void SetTargetScale(TemperatureScale scale)
+    {
+        TargetScale = scale;
+    }
 
-        public MainModel()
-        {
-            SourceScale = TemperatureScale.Kelvin;
-            TargetScale = TemperatureScale.Fahrenheit;
+    public void SetTargetScale(string scaleCode)
+    {
+        TargetScale = _temperature.GetScaleByCode(scaleCode);
+    }
 
-            _temperature = new Temperature(100, SourceScale);
-        }
+    public List<TemperatureScale> GetScales()
+    {
+        return _temperature.GetScales();
+    }
 
-        public double GetTemperature(TemperatureScale scale)
-        {
-            if (scale == TemperatureScale.Kelvin)
-            {
-                return _temperature.Kelvin;
-            }
-            else if (scale == TemperatureScale.Celsius)
-            {
-                return _temperature.Celsius;
-            }
-            else if (scale == TemperatureScale.Fahrenheit)
-            {
-                return _temperature.Fahrenheit;
-            }
+    public double GetTargetTemperature()
+    {
+        return TargetTemperature;
+    }
 
-            return _temperature.Kelvin;
-        }
+    public TemperatureScale GetSourceScale()
+    {
+        return SourceScale;
+    }
 
-        public void SetTemperature(double value, TemperatureScale scale)
-        {
-            if (scale == TemperatureScale.Kelvin)
-            {
-                _temperature.Kelvin = value;
-            }
-            else if (scale == TemperatureScale.Celsius)
-            {
-                _temperature.Celsius = value;
-            }
-            else if (scale == TemperatureScale.Fahrenheit)
-            {
-                _temperature.Fahrenheit = value;
-            }
-        }
+    public TemperatureScale GetTargetScale()
+    {
+        return TargetScale;
+    }
+
+    public double GetTemperature(TemperatureScale scale)
+    {
+        return _temperature.GetTemperature(scale);
+    }
+
+    public void SetTemperature(double value, TemperatureScale scale)
+    { 
+        _temperature.SetTemperature(value, scale);
     }
 }

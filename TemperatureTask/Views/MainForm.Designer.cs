@@ -38,7 +38,6 @@
             label3 = new Label();
             tbSourceTemperature = new TextBox();
             label1 = new Label();
-            btClose = new Button();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,12 +54,12 @@
             tableLayoutPanel1.Controls.Add(label3, 0, 2);
             tableLayoutPanel1.Controls.Add(tbSourceTemperature, 0, 1);
             tableLayoutPanel1.Controls.Add(label1, 0, 0);
-            tableLayoutPanel1.Controls.Add(btClose, 0, 10);
             tableLayoutPanel1.Dock = DockStyle.Fill;
-            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Location = new Point(10, 10);
             tableLayoutPanel1.Margin = new Padding(10);
+            tableLayoutPanel1.MinimumSize = new Size(280, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 11;
+            tableLayoutPanel1.RowCount = 10;
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
@@ -70,9 +69,8 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.Size = new Size(284, 461);
+            tableLayoutPanel1.Size = new Size(364, 341);
             tableLayoutPanel1.TabIndex = 13;
             // 
             // tbTargetTemperature
@@ -111,7 +109,7 @@
             cbTargetScale.FormattingEnabled = true;
             cbTargetScale.Location = new Point(3, 126);
             cbTargetScale.Name = "cbTargetScale";
-            cbTargetScale.Size = new Size(278, 23);
+            cbTargetScale.Size = new Size(358, 23);
             cbTargetScale.TabIndex = 15;
             cbTargetScale.SelectedIndexChanged += cbTargetScale_SelectedIndexChanged;
             // 
@@ -131,7 +129,7 @@
             cbSourceScale.FormattingEnabled = true;
             cbSourceScale.Location = new Point(3, 72);
             cbSourceScale.Name = "cbSourceScale";
-            cbSourceScale.Size = new Size(278, 23);
+            cbSourceScale.Size = new Size(358, 23);
             cbSourceScale.TabIndex = 13;
             cbSourceScale.SelectedIndexChanged += cbSourceScale_SelectedIndexChanged;
             // 
@@ -161,24 +159,17 @@
             label1.TabIndex = 10;
             label1.Text = "Конвертировать";
             // 
-            // btClose
-            // 
-            btClose.Location = new Point(3, 420);
-            btClose.Name = "btClose";
-            btClose.Size = new Size(150, 38);
-            btClose.TabIndex = 19;
-            btClose.Text = "Закрыть";
-            btClose.UseVisualStyleBackColor = true;
-            btClose.Click += btClose_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(284, 461);
+            ClientSize = new Size(384, 361);
             Controls.Add(tableLayoutPanel1);
-            MinimumSize = new Size(100, 350);
+            MinimumSize = new Size(300, 350);
             Name = "MainForm";
+            Padding = new Padding(10);
+            SizeGripStyle = SizeGripStyle.Show;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Конвертер температуры";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -197,6 +188,5 @@
         private Label label3;
         private TextBox tbSourceTemperature;
         private Label label1;
-        private Button btClose;
     }
 }

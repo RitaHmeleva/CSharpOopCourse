@@ -4,9 +4,9 @@ namespace TemperatureTask
 {
     public partial class MainForm : Form, IMainForm
     {
-        public Action<int>? SaveSourceScale;
+        public Action<string>? SaveSourceScale;
 
-        public Action<int>? SaveTargetScale;
+        public Action<string>? SaveTargetScale;
 
         public Action<double>? ConvertTemperature;
 
@@ -41,20 +41,18 @@ namespace TemperatureTask
             }
         }
 
-        public void SetSourceScales(List<string> scales)
+        public void SetSourceScales(Dictionary<string, string> scales)
         {
-            foreach (string scale in scales)
-            {
-                cbSourceScale.Items.Add(scale);
-            }
+            cbSourceScale.DataSource = new BindingSource(scales, null);
+            cbSourceScale.ValueMember = "Key";
+            cbSourceScale.DisplayMember = "Value";
         }
 
-        public void SetTargetScales(List<string> scales)
+        public void SetTargetScales(Dictionary<string, string> scales)
         {
-            foreach (string scale in scales)
-            {
-                cbTargetScale.Items.Add(scale);
-            }
+            cbTargetScale.DataSource = new BindingSource(scales, null);
+            cbTargetScale.ValueMember = "Key";
+            cbTargetScale.DisplayMember = "Value";
         }
 
         public void SetSourceTemperature(double value)
@@ -67,24 +65,24 @@ namespace TemperatureTask
             tbTargetTemperature.Text = value.ToString();
         }
 
-        public void SetSourceScale(int index)
+        public void SetSourceScale(string scaleCode)
         {
-            cbSourceScale.SelectedIndex = index;
+            cbSourceScale.SelectedValue = scaleCode;
         }
 
-        public void SetTargetScale(int index)
+        public void SetTargetScale(string scaleCode)
         {
-            cbTargetScale.SelectedIndex = index;
+            cbTargetScale.SelectedValue = scaleCode;
         }
 
         private void cbSourceScale_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SaveSourceScale?.Invoke(cbSourceScale.SelectedIndex);
+            SaveSourceScale?.Invoke((string)cbSourceScale.SelectedValue);
         }
 
         private void cbTargetScale_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SaveTargetScale?.Invoke(cbTargetScale.SelectedIndex);
+            SaveTargetScale?.Invoke((string)cbTargetScale.SelectedValue);
         }
     }
 }

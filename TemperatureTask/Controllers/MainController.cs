@@ -1,51 +1,46 @@
 ﻿using TemperatureTask.Models;
 
-namespace TemperatureTask.Controllers
+namespace TemperatureTask.Controllers;
+
+internal class MainController
 {
-    internal class MainController
+    private MainForm _view;
+    private MainModel _model;
+
+    public MainController(MainForm view, MainModel model)
     {
-        MainForm _view;
-        MainModel _model;
+        _view = view;
+        _model = model;
 
-        List<string> scales = new List<string> { "Кельвины", "Градусы Цельсия", "Градусы Фаренгейта" };
+        _view.ConvertTemperature = ConvertTemperature;
 
-        public MainController(MainForm view)
-        {
-            _view = view;
-            _model = new MainModel();
+        _view.SetSourceScales(_model.GetScales().ToDictionary(k => k.Code, i => i.UnitsName));
 
-            _view.SaveSourceScale = SaveSourceScale;
+        _view.SetTargetScales(_model.GetScales().ToDictionary(k => k.Code, i => i.UnitsName));
 
-            _view.SaveTargetScale = SaveTargetScale;
+        _view.SaveSourceScale = SaveSourceScale;
 
-            _view.ConvertTemperature = ConvertTemperature;
+        _view.SaveTargetScale = SaveTargetScale;
 
-            _view.SetSourceScales(scales);
+        _view.SetSourceScale(_model.GetSourceScale().Code);
 
-            _view.SetTargetScales(scales);
+        _view.SetTargetScale(_model.GetTargetScale().Code);
+    }
 
-            _view.SetSourceTemperature(_model.SourceTemperature);
+    private void SaveSourceScale(string scaleCode)
+    {
+        _model.SetSourceScale(scaleCode);
+    }
 
-            _view.SetSourceScale((int)_model.SourceScale);
+    private void SaveTargetScale(string scaleCode)
+    {
+        _model.SetTargetScale(scaleCode);
+    }
 
-            _view.SetTargetScale((int)_model.TargetScale);
-        }
+    private void ConvertTemperature(double value)
+    {
+        _model.SetTemperature(value, _model.GetSourceScale());
 
-        private void SaveSourceScale(int index)
-        {
-            _model.SourceScale = (TemperatureScale)index;
-        }
-
-        private void SaveTargetScale(int index)
-        {
-            _model.TargetScale = (TemperatureScale)index;
-        }
-
-        private void ConvertTemperature(double value)
-        {
-            _model.SetTemperature(value, _model.SourceScale);
-
-            _view.SetTargetTemperature(Math.Round(_model.TargetTemperature, 3));
-        }
+        _view.SetTargetTemperature(Math.Round(_model.GetTargetTemperature(), 3, MidpointRounding.AwayFromZero));
     }
 }
