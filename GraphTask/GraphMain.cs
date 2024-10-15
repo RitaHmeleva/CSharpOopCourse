@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace GraphTask;
+﻿namespace GraphTask;
 
 internal class GraphMain
 {
