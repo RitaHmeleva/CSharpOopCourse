@@ -24,26 +24,27 @@ public class Graph
 
         Queue<int> queue = new Queue<int>();
 
-        //queue.Enqueue(0);
-
-        for (int i = 0; i < _graph.GetLength(0); i++)
+        for (int i = 0; i < visited.Length; i++)
         {
-            if (queue.Count == 0)
+            if (!visited[i])
             {
                 queue.Enqueue(i);
-            }
 
-            int vertex = queue.Dequeue();
-            visited[vertex] = true;
-            action(vertex);
-
-            for (int j = 0; j < _graph.GetLength(0); j++)
-            {
-                if (_graph[vertex, j] != 0 && !(visited[j]))
+                while (queue.Count > 0)
                 {
-                    queue.Enqueue(j);
-                    visited[j] = true;
-                    action(j);
+                    int vertex = queue.Dequeue();
+                    visited[vertex] = true;
+                    action(vertex);
+
+                    for (int j = 0; j < _graph.GetLength(0); j++)
+                    {
+                        if (_graph[vertex, j] != 0 && !(visited[j]))
+                        {
+                            queue.Enqueue(j);
+                            visited[j] = true;
+                            action(j);
+                        }
+                    }
                 }
             }
         }

@@ -4,7 +4,7 @@ namespace ListTask;
 
 class SinglyLinkedList<T>
 {
-    private ListItem<T> _head;
+    private ListItem<T>? _head;
 
     public int Count { get; private set; }
 
@@ -19,17 +19,25 @@ class SinglyLinkedList<T>
 
         stringBuilder.Append('(');
 
-        for (ListItem<T> currentItem = _head; currentItem != null; currentItem = currentItem.Next)
+        if (_head != null)
         {
-            stringBuilder.Append(currentItem.Data + ", ");
-        }
+            for (ListItem<T> currentItem = _head; currentItem.Next != null; currentItem = currentItem.Next)
+            {
+                stringBuilder.Append(currentItem.Data);
+                stringBuilder.Append(", ");
 
+                if (currentItem.Next.Next == null)
+                {
+                    stringBuilder.Append(currentItem.Next.Data);
+                }
+            }
+        }
         stringBuilder.Append(')');
 
         return stringBuilder.ToString();
     }
 
-    public T GetFirstElement()
+    public T? GetFirst()
     {
         if (_head == null)
         {
@@ -39,13 +47,17 @@ class SinglyLinkedList<T>
         return _head.Data;
     }
 
-    private ListItem<T> GetItem(int index)
+    private ListItem<T>? GetItem(int index)
     {
-        ListItem<T> currentItem = _head;
+        ListItem<T>? currentItem = _head;
 
-        for (int i = 1; i <= index; i++)
+        int i = 0;
+
+        while (i <= index && currentItem != null)
         {
             currentItem = currentItem.Next;
+
+            i++;
         }
 
         return currentItem;
@@ -59,86 +71,105 @@ class SinglyLinkedList<T>
         }
     }
 
-    public T this[int index]
+    public T? this[int index]
     {
         get
         {
             CheckIndex(index);
 
-            return GetItem(index).Data;
+            ListItem<T>? item = GetItem(index);
+
+            if (item is null)
+            {
+                return default;
+            }
+
+            return item.Data;
         }
 
         set
         {
             CheckIndex(index);
 
-            GetItem(index).Data = value;
+            ListItem<T>? item = GetItem(index);
+
+            if (item is not null)
+            {
+                item.Data = value;
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Item at index {index} is null");
+            }
         }
     }
 
-    public T RemoveElement(int index)
+    public T? Remove(int index)
     {
+        if (_head is null)
+        {
+            throw new IndexOutOfRangeException("Can't remove element from empty list");
+        }
+
         CheckIndex(index);
 
         Count--;
 
-        T removedData = _head.Data;
+        T? removedData = _head.Data;
 
         if (index == 0)
         {
-            _head = _head.Next;
-
-            return removedData;
+            return RemoveFirst();
         }
 
-        ListItem<T> previousItem = GetItem(index - 1);
-        removedData = previousItem.Next.Data;
-        previousItem.Next = previousItem.Next.Next;
+        ListItem<T>? previousItem = GetItem(index - 1);
+        if (previousItem is not null && previousItem.Next is not null)
+        {
+            removedData = previousItem.Next.Data;
+            previousItem.Next = previousItem.Next.Next;
+        }
 
         return removedData;
     }
 
-    public void AddFirst(T data)
+    public void AddFirst(T? data)
     {
         _head = new ListItem<T>(data, _head);
 
         Count++;
     }
 
-    public void AddByIndex(int index, T data)
+    public void AddByIndex(int index, T? data)
     {
         if (index < 0 || index > Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count}");
         }
 
-        Count++;
-
         ListItem<T> newItem = new ListItem<T>(data);
 
         if (index == 0)
         {
-            newItem.Next = _head;
-            _head = newItem;
+            AddFirst(data);
         }
         else
         {
-            ListItem<T> previousItem = GetItem(index - 1);
-            newItem.Next = previousItem.Next;
-            previousItem.Next = newItem;
+            ListItem<T>? previousItem = GetItem(index - 1);
+            if (previousItem is not null)
+            {
+                newItem.Next = previousItem.Next;
+                previousItem.Next = newItem;
+            }
+
+            Count++;
         }
     }
 
-    public bool RemoveData(T data)
+    public bool RemoveData(T? data)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException(nameof(data), "Data should not be null");
-        }
-
         for (ListItem<T>? currentItem = _head, previousItem = null; currentItem != null; previousItem = currentItem, currentItem = currentItem.Next)
         {
-            if (currentItem.Data.Equals(data))
+            if (currentItem.Data is null && data is null || currentItem.Data is not null && currentItem.Data.Equals(data))
             {
                 if (previousItem == null)
                 {
@@ -158,11 +189,11 @@ class SinglyLinkedList<T>
         return false;
     }
 
-    public T RemoveFirstElement()
+    public T? RemoveFirst()
     {
         if (_head == null)
         {
-            throw new Exception("Can't remove element from empty list");
+            throw new IndexOutOfRangeException("Can't remove element from empty list");
         }
 
         ListItem<T> removedItem = _head;
@@ -177,7 +208,7 @@ class SinglyLinkedList<T>
     public void Reverse()
     {
         ListItem<T>? currentItem = _head;
-        ListItem<T> previousItem = null;
+        ListItem<T>? previousItem = null;
 
         while (currentItem != null)
         {
