@@ -2,7 +2,7 @@
 
 using Models.TemperatureScales;
 
-internal class MainModel
+internal class MainModel : IMainModel
 {
     private TemperatureModel _temperature;
 

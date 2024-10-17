@@ -31,6 +31,9 @@ internal class GraphMain
         Console.WriteLine("Обход в глубину:");
         matrix.DepthTraversal(PrintNode);
 
+        Console.WriteLine("Рекурсивный обход в глубину:");
+        matrix.RecursionDepthTraversal(PrintNode);
+
         Console.ReadLine();
     }
 }

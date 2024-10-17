@@ -4,11 +4,9 @@ namespace TemperatureTask
 {
     public partial class MainForm : Form, IMainForm
     {
-        public Action<string>? SaveSourceScale;
-
-        public Action<string>? SaveTargetScale;
-
-        public Action<double>? ConvertTemperature;
+        public event EventHandler<double>? ConvertTemperature;
+        public event EventHandler<string>? SaveSourceScale;
+        public event EventHandler<string>? SaveTargetScale;
 
         public MainForm()
         {
@@ -33,7 +31,7 @@ namespace TemperatureTask
             }
             else if (double.TryParse(tbSourceTemperature.Text, out double value))
             {
-                ConvertTemperature?.Invoke(value);
+                ConvertTemperature?.Invoke(this, value);
             }
             else
             {
@@ -77,12 +75,12 @@ namespace TemperatureTask
 
         private void cbSourceScale_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SaveSourceScale?.Invoke((string)cbSourceScale.SelectedValue);
+            SaveSourceScale?.Invoke(this, (string)cbSourceScale.SelectedValue);
         }
 
         private void cbTargetScale_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SaveTargetScale?.Invoke((string)cbTargetScale.SelectedValue);
+            SaveTargetScale?.Invoke(this, (string)cbTargetScale.SelectedValue);
         }
     }
 }

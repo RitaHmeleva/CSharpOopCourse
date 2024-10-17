@@ -13,4 +13,10 @@ internal interface IMainForm
     void SetSourceScale(string scaleCode);
 
     void SetTargetScale(string scaleCode);
+
+    event EventHandler<double>? ConvertTemperature;
+
+    event EventHandler<string>? SaveSourceScale;
+
+    event EventHandler<string>? SaveTargetScale;
 }

@@ -18,9 +18,7 @@ public class Graph
 
     public void WidthTraversal(Action<int> action)
     {
-        bool[] visited;
-
-        visited = new bool[_graph.GetLength(0)];
+        bool[] visited = new bool[_graph.GetLength(0)];
 
         Queue<int> queue = new Queue<int>();
 
@@ -33,16 +31,20 @@ public class Graph
                 while (queue.Count > 0)
                 {
                     int vertex = queue.Dequeue();
-                    visited[vertex] = true;
-                    action(vertex);
 
-                    for (int j = 0; j < _graph.GetLength(0); j++)
+                    if (!visited[vertex])
                     {
-                        if (_graph[vertex, j] != 0 && !(visited[j]))
+                        visited[vertex] = true;
+                        action(vertex);
+
+                        for (int j = 0; j < _graph.GetLength(0); j++)
                         {
-                            queue.Enqueue(j);
-                            visited[j] = true;
-                            action(j);
+                            if (_graph[vertex, j] != 0 && !(visited[j]))
+                            {
+                                queue.Enqueue(j);
+                                visited[j] = true;
+                                action(j);
+                            }
                         }
                     }
                 }
@@ -52,33 +54,61 @@ public class Graph
 
     public void DepthTraversal(Action<int> action)
     {
-        bool[] visited;
-
-        visited = new bool[_graph.GetLength(0)];
+        bool[] visited = new bool[_graph.GetLength(0)];
 
         Stack<int> stack = new Stack<int>();
 
-        stack.Push(0);
-
-        for (int i = 0; i < _graph.GetLength(0); i++)
+        for (int i = 0; i < visited.Length; i++)
         {
-            if (stack.Count == 0)
+            if (!visited[i])
             {
                 stack.Push(i);
             }
 
-            int vertex = stack.Pop();
-            visited[vertex] = true;
-            action(vertex);
-
-            for (int j = _graph.GetLength(0) - 1; j >= 0; j--)
+            while (stack.Count > 0)
             {
-                if (_graph[vertex, j] != 0 && !(visited[j]))
+                int vertex = stack.Pop();
+
+                if (!visited[vertex])
                 {
-                    stack.Push(j);
-                    visited[j] = true;
-                    action(j);
+                    visited[vertex] = true;
+                    action(vertex);
+
+                    for (int j = _graph.GetLength(0) - 1; j >= 0; j--)
+                    {
+                        if (_graph[vertex, j] != 0 && !(visited[j]))
+                        {
+                            stack.Push(j);
+                        }
+                    }
                 }
+            }
+        }
+    }
+
+    public void RecursionDepthTraversal(Action<int> action)
+    {
+        bool[] visited = new bool[_graph.GetLength(0)];
+
+        for (int i = 0; i < visited.Length; i++)
+        {
+            if (!visited[i])
+            {
+                RecursionDepthTraversal(i, visited, action);
+            }
+        }
+    }
+
+    public void RecursionDepthTraversal(int i, bool[] visited, Action<int> action)
+    {
+        visited[i] = true;
+        action(i);
+
+        for (int j = 0; j < _graph.GetLength(0); j++)
+        {
+            if (_graph[i, j] != 0 && !(visited[j]))
+            {
+                RecursionDepthTraversal(j, visited, action);
             }
         }
     }
