@@ -28,25 +28,31 @@ internal class Lambdas
 
         double? averageAgeUnderEighteen = persons
             .Where(p => p.Age < 18)
-            .Select(p => p?.Age)
-            .Average();
+            .Average(p => p?.Age);
 
-        Console.WriteLine("Имена людей младше 18: " + string.Join(", ", personsUnderEighteen) + ". Средний возраст: " + averageAgeUnderEighteen);
+        if (personsUnderEighteen.Count == 0)
+        {
+            Console.WriteLine("Нет людей младше 18");
+        }
+        else
+        {
+            Console.WriteLine("Имена людей младше 18: " + string.Join(", ", personsUnderEighteen) + ". Средний возраст: " + averageAgeUnderEighteen);
+        }
 
-        var averageAgesByName = persons
+        var averageAgesByNames = persons
             .GroupBy(p => p.Name)
-            .ToDictionary(n => n.Key, a => a.Average(a => a.Age))
+            .ToDictionary(g => g.Key, g => g.Average(p => p.Age))
             .ToList();
 
-        Console.WriteLine("Имена со средним возрастом: " + string.Join(", ", averageAgesByName));
+        Console.WriteLine("Имена со средним возрастом: " + string.Join(", ", averageAgesByNames));
 
-        var agesBetweenTwentyAndFortyFive = persons
+        var personsBetweenTwentyAndFortyFive = persons
             .Where(p => p.Age >= 20 && p.Age <= 45)
             .OrderByDescending(p => p.Age)
             .Select(p => p.Name)
             .ToList();
 
-        Console.WriteLine("Имена людей, возраст которых от 20 до 45: " + string.Join(", ", agesBetweenTwentyAndFortyFive));
+        Console.WriteLine("Имена людей, возраст которых от 20 до 45: " + string.Join(", ", personsBetweenTwentyAndFortyFive));
 
         Console.ReadLine();
     }
