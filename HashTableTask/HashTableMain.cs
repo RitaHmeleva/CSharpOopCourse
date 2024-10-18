@@ -4,20 +4,11 @@ internal class HashTableMain
 {
     static void Main(string[] args)
     {
-        HashTable<int> hashTable = new HashTable<int>();
-
-        hashTable.Add(5);
-        hashTable.Add(6);
-        hashTable.Add(7);
-        hashTable.Add(1);
-        hashTable.Add(-6);
-        hashTable.Add(77);
-
+        HashTable<int> hashTable = new HashTable<int>() { 5, 6, 7, 1, -6, 77 };
 
         Console.WriteLine(hashTable);
         Console.WriteLine($"Count = {hashTable.Count}");
         Console.WriteLine(hashTable.Contains(6));
-
 
         hashTable.Remove(6);
         Console.WriteLine(hashTable.Contains(6));
@@ -35,7 +26,7 @@ internal class HashTableMain
 
         try
         {
-            hashTable.CopyTo(array, 7);
+            hashTable.CopyTo(array, 2);
         }
         catch (IndexOutOfRangeException ex)
         {
@@ -51,14 +42,13 @@ internal class HashTableMain
 
         Console.WriteLine();
 
-        hashTable.Clear();
-        Console.WriteLine($"Count = {hashTable.Count}");
-
         foreach (int item in hashTable)
         {
             Console.WriteLine(item);
         }
 
+        hashTable.Clear();
+        Console.WriteLine($"Count = {hashTable.Count}");
 
         Console.ReadLine();
     }

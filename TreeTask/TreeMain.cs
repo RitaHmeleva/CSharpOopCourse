@@ -30,18 +30,18 @@ internal class TreeMain
         Console.WriteLine(tree);
 
         tree.DeleteNode(12);
-        Console.WriteLine("Дерево: ");
+        Console.WriteLine("Дерево:");
         Console.WriteLine(tree);
 
-        Console.WriteLine("Обход в глубину с рекурсией: ");
+        Console.WriteLine("Обход в глубину с рекурсией:");
 
-        tree.RecursionDepthTraversal(PrintData);
+        tree.DepthTraversalRecursive(PrintData);
 
-        Console.WriteLine("Обход в глубину: ");
+        Console.WriteLine("Обход в глубину:");
         tree.DepthTraversal(PrintData);
 
-        Console.WriteLine("Обход в ширину: ");
-        tree.WidthTraversal(PrintData);
+        Console.WriteLine("Обход в ширину:");
+        tree.BreadthFirstSearch(PrintData);
 
         Console.WriteLine("Число элементов: " + tree.Count);
 
