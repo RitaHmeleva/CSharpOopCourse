@@ -54,7 +54,7 @@ internal class HashTable<T> : ICollection<T>
 
     public void Add(T item)
     {
-        int index = Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
 
         if (_lists[index] == null)
         {
@@ -85,11 +85,11 @@ internal class HashTable<T> : ICollection<T>
 
     public bool Contains(T item)
     {
-        int index = Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
 
         if (_lists[index] is not null)
         {
-            return _lists[index].Contains(item);
+            return _lists[index]!.Contains(item);
         }
 
         return false;
@@ -121,14 +121,14 @@ internal class HashTable<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        int index = Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
 
         if (_lists[index] is not null)
         {
             _version++;
             Count--;
 
-            return _lists[index].Remove(item);
+            return _lists[index]!.Remove(item);
         }
 
         return false;
