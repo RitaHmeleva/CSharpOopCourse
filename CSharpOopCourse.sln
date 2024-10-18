@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvTask", "CsvTask\CsvTask.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphTask", "GraphTask\GraphTask.csproj", "{B52D3F51-4CEF-4D83-82BA-6F1123ADB4C3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayListHome", "ArrayListHome\ArrayListHome.csproj", "{6298F5EB-66FF-4F4B-B2E0-B9EEB3D74BA3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdasTask", "LambdasTask\LambdasTask.csproj", "{CDD6DF62-3696-4586-AA16-2A89018A9D63}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{1F5F3F90-B5D1-49EB-ACD7-14FAD2D4B3E3}"
@@ -63,10 +61,6 @@ Global
 		{B52D3F51-4CEF-4D83-82BA-6F1123ADB4C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B52D3F51-4CEF-4D83-82BA-6F1123ADB4C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B52D3F51-4CEF-4D83-82BA-6F1123ADB4C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6298F5EB-66FF-4F4B-B2E0-B9EEB3D74BA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6298F5EB-66FF-4F4B-B2E0-B9EEB3D74BA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6298F5EB-66FF-4F4B-B2E0-B9EEB3D74BA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6298F5EB-66FF-4F4B-B2E0-B9EEB3D74BA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDD6DF62-3696-4586-AA16-2A89018A9D63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CDD6DF62-3696-4586-AA16-2A89018A9D63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDD6DF62-3696-4586-AA16-2A89018A9D63}.Release|Any CPU.ActiveCfg = Release|Any CPU

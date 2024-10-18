@@ -1,127 +1,107 @@
-﻿namespace ArrayListHome;
+﻿using System.Text;
+
+namespace ArrayListHome;
 
 internal class ArrayListHome<T>
 {
+    private List<string> _list = new List<string>();
     private int count;
 
-    public ArrayListHome()
-    {
-        count = 0;
-    }
-
-    private T[] items = new T[10];
+    public int Count => count;
 
     public override string ToString()
     {
-        return string.Join(" ", items);
-    }
+        StringBuilder stringBuilder = new StringBuilder();
 
-    public int Count
-    {
-        get { return count; }
-    }
-
-    public T this[int index]
-    {
-        get
+        if (_list != null)
         {
-            if (index >= Count)
+            for (int i = 0; i < Count; i++)
             {
-                throw new ArgumentOutOfRangeException("");
+                stringBuilder.Append(_list[i]);
+                stringBuilder.AppendLine();
             }
-
-            return items[index];
         }
 
-        set
+        return stringBuilder.ToString();
+    }
+
+    public void ReadFileToList(string fileName)
+    {
+        using (StreamReader reader = new StreamReader(fileName))
         {
-            if (index >= Count)
+            string? currentLine;
+
+            while ((currentLine = reader.ReadLine()) != null)
             {
-                throw new ArgumentOutOfRangeException("");
+                _list.Add(currentLine);
+
+                count++;
             }
-
-            items[index] = value;
         }
-
-    }
-
-    public void Add(T item)
-    {
-        if (count >= items.Length)
-        {
-            IncreaseCapacity();
-        }
-
-        items[count] = item;
-        ++count;
-    }
-
-    private void IncreaseCapacity()
-    {
-        Array.Resize(ref items, items.Length * 2);
-    }
-
-    public void RemoveAt(int index)
-    {
-        if (index >= Count)
-        {
-            throw new ArgumentOutOfRangeException("");
-        }
-
-        if (index < count - 1)
-        {
-            Array.Copy(items, index + 1, items, index, count - index - 1);
-        }
-
-        items[count - 1] = default;
-        --count;
     }
 
     public void RemoveEvenNumbers()
     {
         for (int i = 0; i < Count; i++)
         {
-            if (items[i] is int)
+            string[] numbersString = _list[i].Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+            List<int> numbersList = new List<int>();
+
+            foreach (string number in numbersString)
             {
-                if (Convert.ToInt32(items[i]) % 2 == 0)
+                numbersList.Add(Convert.ToInt32(number));
+            }
+
+            for (int j = 0; j < numbersList.Count; j++)
+            {
+                if (numbersList[j] % 2 == 0)
                 {
-                    RemoveAt(i);
+                    numbersList.RemoveAt(j);
                 }
+            }
+
+            if (numbersList.Count == 0)
+            {
+                _list.RemoveAt(i);
+
+                i--;
+                count--;
+            }
+            else
+            {
+                _list[i] = string.Join(", ", numbersList);
             }
         }
     }
 
-    public bool FindNumber(T number, int index)
+    public void RemoveRepeated()
     {
-        bool found = false;
-
-        for (int i = 0; i < index; i++)
+        for (int i = 0; i < Count; i++)
         {
-            if (Convert.ToInt32(items[i]) == Convert.ToInt32(number))
+            List<string> list = new List<string>();
+            string[] array = _list[i].Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+            list.Add(array[0]);
+
+            for (int j = 1; j < array.Length; j++)
             {
-                if (found == false)
+                if (!list.Contains(array[j]))
                 {
-                    return true;
+                    list.Add(array[j]);
                 }
             }
-        }
 
-        return false;
-    }
-
-    public ArrayListHome<T> RemoveRepeatedNumbers()
-    {
-        ArrayListHome<T> newList = new ArrayListHome<T>();
-
-        for (int i = 0, j = 0; i < Count; i++)
-        {
-            if (FindNumber(items[i], i) == false)
+            if (list.Count == 0)
             {
-                newList.items[j] = items[i];
-                j++;
+                _list.RemoveAt(i);
+
+                i--;
+                count--;
+            }
+            else
+            {
+                _list[i] = string.Join(", ", list);
             }
         }
-
-        return newList;
     }
 }

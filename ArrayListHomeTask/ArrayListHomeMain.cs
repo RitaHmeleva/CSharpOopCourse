@@ -4,24 +4,9 @@ internal class ArrayListHomeMain
 {
     static void Main(string[] args)
     {
-        ArrayListHome<int> list = new ArrayListHome<int>();
+        ArrayListHome<string> list = new ArrayListHome<string>();
 
-        using (StreamReader reader = new StreamReader("..\\..\\list.txt"))
-        {
-            string currentLine;
-
-            while ((currentLine = reader.ReadLine()) != null)
-            {
-                string[] numberStrings = currentLine.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
-                int[] numbers = new int[numberStrings.Length];
-
-                for (int i = 0; i < numbers.Length; i++)
-                {
-                    numbers[i] = Convert.ToInt32(numberStrings[i]);
-                    list.Add(numbers[i]);
-                }
-            }
-        }
+        list.ReadFileToList("..\\..\\list.txt");
 
         Console.WriteLine(list);
 
@@ -29,7 +14,9 @@ internal class ArrayListHomeMain
 
         Console.WriteLine(list);
 
-        Console.WriteLine(list.RemoveRepeatedNumbers());
+        list.RemoveRepeated();
+
+        Console.WriteLine(list);
 
         Console.ReadLine();
     }
