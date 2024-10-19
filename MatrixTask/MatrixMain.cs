@@ -14,7 +14,7 @@ internal class MatrixMain
         double[] components3 = { 3, 0, 2, 8 };
         double[] components4 = { 2, 0, 1, 2 };
 
-        double[,] vectors1 =
+        double[,] rows1 =
         {
             { 1, 4, 8, 2 },
             { 2, 9, 6, 5 },
@@ -22,10 +22,16 @@ internal class MatrixMain
             { 8, 0, 8, 13 }
         };
 
-        double[,] vectors2 =
+        double[,] rows2 =
         {
-            { 4, 5, 1},
+            { 4, 5, 1 },
             { 2, 2, 2 }
+        };
+
+        double[,] rows3 =
+        {
+            { 6, 5, 2 },
+            { 2, 2, 3 }
         };
 
         Vector vector1 = new Vector(components1);
@@ -34,11 +40,13 @@ internal class MatrixMain
 
         Matrix matrix1 = new Matrix(rowsCount, columnsCount);
         Matrix matrix2 = new Matrix(matrix1);
-        Matrix matrix3 = new Matrix(vectors1);
-        Matrix matrix4 = new Matrix(vectors2);
+        Matrix matrix3 = new Matrix(rows1);
+        Matrix matrix4 = new Matrix(rows2);
 
-        Vector[] vectors = { vector1, vector2, vector3 };
+        Vector[] vectors = { vector1, vector2, vector3, vector1, vector2 };
         Matrix matrix5 = new Matrix(vectors);
+
+        Matrix matrix6 = new Matrix(rows3);
 
         Console.WriteLine(matrix1);
         Console.WriteLine(matrix2);
@@ -79,7 +87,10 @@ internal class MatrixMain
 
         Console.WriteLine("Разность матриц: " + Matrix.GetDifference(matrix3, matrix3));
 
-        Console.WriteLine("Произведение матриц: " + Matrix.GetProduct(matrix4, matrix4));
+        Console.WriteLine(matrix4);
+        Console.WriteLine(matrix6);
+
+        Console.WriteLine("Произведение матриц: " + Matrix.GetProduct(matrix6, matrix4));
 
         Console.ReadLine();
     }

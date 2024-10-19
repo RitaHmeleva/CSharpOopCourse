@@ -45,12 +45,14 @@ internal class Matrix
         }
 
         _rows = new Vector[array.GetLength(0)];
+        int columnsCount = array.GetLength(0);
+        int rowsCount = array.GetLength(1);
 
-        for (int i = 0; i < array.GetLength(0); i++)
+        for (int i = 0; i < columnsCount; i++)
         {
-            _rows[i] = new Vector(array.GetLength(1));
+            _rows[i] = new Vector(rowsCount);
 
-            for (int j = 0; j < array.GetLength(1); j++)
+            for (int j = 0; j < rowsCount; j++)
             {
                 _rows[i][j] = array[i, j];
             }
@@ -64,13 +66,23 @@ internal class Matrix
             throw new ArgumentException($"Rows count {rows.Length} should be > 0", nameof(rows));
         }
 
-        this._rows = new Vector[rows.Length];
+        _rows = new Vector[rows.Length];
+        int maxVectorSize = rows[0].Size;
 
         for (int i = 0; i < rows.Length; i++)
         {
-            int maxVectorSize = Math.Max(rows[i].Size, rows[0].Size);
+            maxVectorSize = Math.Max(rows[i].Size, maxVectorSize);
+        }
 
-            this._rows[i] = new Vector(rows[i]);
+
+        for (int i = 0; i < rows.Length; i++)
+        {
+            _rows[i] = new Vector(maxVectorSize);
+
+            for (int j = 0; j < rows[i].Size; j++)
+            {
+                _rows[i][j] = rows[i][j];
+            }
         }
     }
 
@@ -97,7 +109,7 @@ internal class Matrix
 
         if (row.Size != ColumnsCount)
         {
-            throw new ArgumentException($"Vector size {row.Size} should be = matrix columns count {ColumnsCount}");
+            throw new ArgumentException($"Vector size {row.Size} should be = matrix columns count {ColumnsCount}", nameof(row));
         }
 
         _rows[rowIndex] = new Vector(row);
@@ -134,9 +146,9 @@ internal class Matrix
 
     public void Multiply(double scalar)
     {
-        for (int i = 0; i < RowsCount; i++)
+        foreach (Vector row in _rows)
         {
-            _rows[i].Multiply(scalar);
+            row.Multiply(scalar);
         }
     }
 
@@ -172,7 +184,7 @@ internal class Matrix
     {
         if (RowsCount != ColumnsCount)
         {
-            throw new ArrayTypeMismatchException($"Rows count {RowsCount} should be = columns count {ColumnsCount}");
+            throw new InvalidOperationException($"Rows count {RowsCount} should be = columns count {ColumnsCount}");
         }
 
         if (RowsCount == 1)
@@ -205,13 +217,10 @@ internal class Matrix
 
         for (int i = 0; i < RowsCount - 1; i++)
         {
-            stringBuilder.Append(_rows[i]);
-            stringBuilder.Append(", ");
+            stringBuilder.Append(_rows[i]).Append(", ");
         }
 
-        stringBuilder.Append(_rows[RowsCount - 1]);
-
-        stringBuilder.Append('}');
+        stringBuilder.Append(_rows[RowsCount - 1]).Append('}');
 
         return stringBuilder.ToString();
     }
@@ -261,22 +270,16 @@ internal class Matrix
 
     public Vector GetProduct(Vector vector)
     {
-        if (vector.Size == 0)
-        {
-            throw new ArgumentException($"Vector size {vector.Size} should be > 0");
-        }
-
         if (vector.Size != ColumnsCount)
         {
-            throw new ArgumentException($"Vector size {vector.Size} should be = matrix columns count {ColumnsCount}");
+            throw new ArgumentException($"Vector size {vector.Size} should be = matrix columns count {ColumnsCount}", nameof(vector));
         }
 
         Vector productVector = new Vector(RowsCount);
 
-        int index = 0;
-        foreach (Vector row in _rows)
+        for (int i = 0; i < RowsCount; i++)
         {
-            productVector[index++] = Vector.GetScalarProduct(row, vector);
+            productVector[i] = Vector.GetScalarProduct(_rows[i], vector);
         }
 
         return productVector;
@@ -286,7 +289,7 @@ internal class Matrix
     {
         if (matrix1.ColumnsCount != matrix2.ColumnsCount || matrix1.RowsCount != matrix2.RowsCount)
         {
-            throw new ArgumentException($"First matrix rows count { matrix1.RowsCount} and columns count {matrix1.ColumnsCount} should be = second matrix rows count {matrix2.ColumnsCount} and columns count {matrix2.RowsCount}");
+            throw new ArgumentException($"First matrix rows count {matrix1.RowsCount} and columns count {matrix1.ColumnsCount} should be = second matrix rows count {matrix2.ColumnsCount} and columns count {matrix2.RowsCount}");
         }
     }
 
@@ -334,15 +337,21 @@ internal class Matrix
 
     public static Matrix GetProduct(Matrix matrix1, Matrix matrix2)
     {
-        CheckMatricesDimensionsEquals(matrix1, matrix2);
+        if (matrix1.ColumnsCount != matrix2.RowsCount)
+        {
+            throw new ArgumentException($"First matrix columns count {matrix1.ColumnsCount} should be = second matrix rows count {matrix2.RowsCount}");
+        }
 
-        Matrix productMatrix = new Matrix(matrix1);
+        Matrix productMatrix = new Matrix(matrix1.RowsCount, matrix2.ColumnsCount);
 
-        for (int i = 0; i < matrix2.RowsCount; i++)
+        for (int i = 0; i < matrix1.RowsCount; i++)
         {
             for (int j = 0; j < matrix2.ColumnsCount; j++)
             {
-                productMatrix._rows[i][j] *= matrix2._rows[i][j];
+                for (int k = 0; k < matrix1.ColumnsCount; k++)
+                {
+                    productMatrix._rows[i][j] += matrix1._rows[i][k] * matrix2._rows[k][j];
+                }
             }
         }
 
