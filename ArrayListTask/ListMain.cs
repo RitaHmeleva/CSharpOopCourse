@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-
-namespace ArrayListTask;
+﻿namespace ArrayListTask;
 
 internal class ListMain
 {

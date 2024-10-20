@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections;
-using System.Drawing;
-using System.Reflection;
 using System.Text;
 
 namespace ArrayListTask;
 
 public class List<T> : IList<T>
 {
-    private const int _DefaultCapacity = 10;
+    private const int DefaultCapacity = 10;
     private T[] _items;
+    private long _version = 1;
 
     public List()
     {
-        _items = new T[_DefaultCapacity];
+        _items = new T[DefaultCapacity];
     }
 
     public List(int capacity)
     {
-        if (capacity <= 0)
+        if (capacity < 0)
         {
-            throw new ArgumentException($"Capacity {capacity} should be > 0", nameof(capacity));
+            throw new ArgumentException($"Capacity {capacity} should be >= 0", nameof(capacity));
         }
 
         _items = new T[capacity];
@@ -33,27 +32,37 @@ public class List<T> : IList<T>
 
     public int Capacity
     {
-        get
-        {
-            return _items.Length;
-        }
+        get => _items.Length;
 
         set
         {
+            if (value < 0)
+            {
+                throw new ArgumentException($"Capacity {value} should be >= 0", nameof(value));
+            }
+
             Array.Resize(ref _items, value);
+
+            _version++;
         }
     }
 
     public void TrimExcess()
     {
-        if (Count > 0 && Count / _items.Length < 0.9)
+        if (Capacity * 0.9 > Count)
         {
             Capacity = Count;
+            _version++;
         }
     }
 
     public override string ToString()
     {
+        if (Count < 1)
+        {
+            return "[]";
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('[');
@@ -62,8 +71,8 @@ public class List<T> : IList<T>
         {
             for (int i = 0; i < Count - 1; i++)
             {
-                stringBuilder.Append(_items[i]);
-                stringBuilder.Append(',');
+                stringBuilder.Append(_items[i])
+                .Append(", ");
             }
 
             stringBuilder.Append(_items[Count - 1]);
@@ -74,7 +83,7 @@ public class List<T> : IList<T>
         return stringBuilder.ToString();
     }
 
-    public bool IsReadOnly => throw new NotImplementedException();
+    public bool IsReadOnly => false;
 
     public T this[int index]
     {
@@ -104,9 +113,9 @@ public class List<T> : IList<T>
         const int prime = 37;
         int hash = 1;
 
-        foreach (T item in _items)
+        for (int i = 0; i < Count; i++)
         {
-            hash = prime * hash + item.GetHashCode();
+            hash = prime * hash + _items[i]?.GetHashCode() ?? 0;
         }
 
         return hash;
@@ -124,18 +133,28 @@ public class List<T> : IList<T>
             return false;
         }
 
-        List<T> l = (List<T>)o;
+        List<T> list = (List<T>)o;
 
-        if (l.Count != Count)
+        if (list.Count != Count)
         {
             return false;
         }
 
         for (int i = 0; i < Count; i++)
         {
-            if (Comparer<T>.Default.Compare(l._items[i], _items[i]) == 1)
+            if (_items[i] is null)
             {
-                return false;
+                if (list._items[i] is not null)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!_items[i]!.Equals(list._items[i]))
+                {
+                    return false;
+                }
             }
         }
 
@@ -151,11 +170,12 @@ public class List<T> : IList<T>
 
         _items[Count] = item;
         ++Count;
+        _version++;
     }
 
     private void IncreaseCapacity()
     {
-        Capacity = _items.Length * 2;
+        Capacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
     }
 
     public void RemoveAt(int index)
@@ -167,30 +187,21 @@ public class List<T> : IList<T>
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
 
-#pragma warning disable CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.
-        _items[Count - 1] = default;
-#pragma warning restore CS8601 // Возможно, назначение-ссылка, допускающее значение NULL.
+        _items[Count - 1] = default!;
         --Count;
+        _version++;
     }
 
-    public int IndexOf(T item)
+    public int IndexOf(T? item)
     {
-        for (int i = 0; i < Count; i++)
-        {
-            if (Comparer<T>.Default.Compare(_items[i], item) == 0)
-            {
-                return i;
-            }
-        }
-
-        return -1;
+        return Array.IndexOf(_items, item, 0, Count);
     }
 
     public void Insert(int index, T item)
     {
-        if (index < 0 || index >= Count)
+        if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count - 1}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count}");
         }
 
         if (Capacity == Count)
@@ -203,39 +214,37 @@ public class List<T> : IList<T>
         _items[index] = item;
 
         Count++;
+        _version++;
     }
 
     public void Clear()
     {
-        _items = null;
-
         Count = 0;
+        _version++;
     }
 
     public bool Contains(T item)
     {
-        for (int i = 0; i < Count; i++)
-        {
-            if (Comparer<T>.Default.Compare(_items[i], item) == 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return IndexOf(item) > -1;
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        if (arrayIndex < 0 || arrayIndex >= Count)
+        if (array is null)
         {
-            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be between 0 and {Count - 1}");
+            throw new ArgumentNullException(nameof(array), "Array should be > 0");
         }
 
-        if (array.Length - arrayIndex < Count)
+        if (arrayIndex < 0)
         {
-            throw new IndexOutOfRangeException("Not enough place in array to copy list");
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be > 0");
         }
+
+        if (array.Rank > 1 || array.Length - arrayIndex < Count)
+        {
+            throw new ArgumentException("Array is multidimensional or not enough space in array", nameof(array));
+        }
+
 
         Array.Copy(_items, 0, array, arrayIndex, Count);
     }
@@ -256,72 +265,19 @@ public class List<T> : IList<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        return new Enumerator(this);
+        long initialVersion = _version;
+
+        for (int i = 0; i < Count; i++)
+        {
+            if (initialVersion != _version)
+                throw new InvalidOperationException("Array list has changed.");
+
+            yield return _items[i];
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return new Enumerator(this);
-    }
-
-    internal class Enumerator : IEnumerator<T>
-    {
-        private List<T> _list;
-        private int _index;
-
-        public Enumerator(List<T> list)
-        {
-            _list = list;
-
-            Reset();
-        }
-
-        public T Current
-        {
-            get
-            {
-                if (_index < 0)
-                {
-                    throw new InvalidOperationException("Enumerator Ended");
-                }
-
-                return _list._items[_index];
-            }
-        }
-
-        object? IEnumerator.Current
-        {
-            get
-            {
-                if (_index < 0)
-                {
-                    throw new InvalidOperationException("Enumerator Ended");
-                }
-
-                return _list._items[_index];
-            }
-        }
-
-        public void Dispose()
-        {
-            _index = -1;
-        }
-
-        public bool MoveNext()
-        {
-            if (_index > -1 && _index < _list.Count - 1)
-            {
-                _index++;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Reset()
-        {
-            _index = -1;
-        }
+        return (IEnumerator)GetEnumerator();
     }
 }
