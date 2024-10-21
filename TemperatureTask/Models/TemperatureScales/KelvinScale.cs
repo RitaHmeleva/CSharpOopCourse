@@ -1,19 +1,19 @@
 ﻿namespace TemperatureTask.Models.TemperatureScales;
 
-internal class KelvinScale : TemperatureScale
+internal class KelvinScale : ITemperatureScale
 {
-    public override string Name => "Шкала Кельвина";
+    public string Name => "Шкала Кельвина";
 
-    public override string UnitsName => "Кельвины";
+    public string UnitsName => "Кельвины";
 
-    public override string Code => "Kelvin";
+    public string Code => "Kelvin";
 
-    public override double FromKelvin(double value)
+    public double ConvertFromKelvin(double value)
     {
         return value;
     }
 
-    public override double ToKelvin(double value)
+    public double ConvertToKelvin(double value)
     {
         return value;
     }

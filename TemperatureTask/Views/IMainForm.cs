@@ -1,10 +1,10 @@
-﻿namespace TemperatureTask.Views;
+﻿using TemperatureTask.Models.TemperatureScales;
+
+namespace TemperatureTask.Views;
 
 internal interface IMainForm
 {
-    void SetSourceScales(Dictionary<string, string> scales);
-
-    void SetTargetScales(Dictionary<string, string> scales);
+    void SetTemperatureScales(IReadOnlyList<ITemperatureScale> scales);
 
     void SetSourceTemperature(double value);
 
@@ -14,9 +14,9 @@ internal interface IMainForm
 
     void SetTargetScale(string scaleCode);
 
-    event EventHandler<double>? ConvertTemperature;
+    event Action<double>? ConvertTemperature;
 
-    event EventHandler<string>? SaveSourceScale;
+    event Action<string>? SaveSourceScale;
 
-    event EventHandler<string>? SaveTargetScale;
+    event Action<string>? SaveTargetScale;
 }

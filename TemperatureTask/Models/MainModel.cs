@@ -4,69 +4,63 @@ using Models.TemperatureScales;
 
 internal class MainModel : IMainModel
 {
-    private TemperatureModel _temperature;
+    public IReadOnlyList<ITemperatureScale> Scales { get; set; }
 
-    private double TargetTemperature => GetTemperature(TargetScale);
+    public double Kelvin { get; set; }
 
-    private TemperatureScale SourceScale { get; set; }
+    public double TargetTemperature => GetTemperature(TargetScale);
 
-    private TemperatureScale TargetScale { get; set; }
+    public ITemperatureScale SourceScale { get; set; }
+
+    public ITemperatureScale TargetScale { get; set; }
 
     public MainModel()
     {
-        _temperature = new TemperatureModel(100, "Celsius");
+        Scales = new List<ITemperatureScale>
+        {
+            new KelvinScale(),
+            new CelsiusScale(),
+            new FahrenheitScale()
+        };
 
-        SourceScale = _temperature.GetScaleByCode("Celsius");
-        TargetScale = _temperature.GetScaleByCode("Fahrenheit");
-    }
-
-    public void SetSourceScale(TemperatureScale scale)
-    {
-        SourceScale = scale;
+        SourceScale = GetScaleByCode("Celsius");
+        TargetScale = GetScaleByCode("Fahrenheit");
     }
 
     public void SetSourceScale(string scaleCode)
-    { 
-        SourceScale = _temperature.GetScaleByCode(scaleCode);
-    }
-
-    public void SetTargetScale(TemperatureScale scale)
     {
-        TargetScale = scale;
+        SourceScale = GetScaleByCode(scaleCode);
     }
 
     public void SetTargetScale(string scaleCode)
     {
-        TargetScale = _temperature.GetScaleByCode(scaleCode);
-    }
-
-    public List<TemperatureScale> GetScales()
-    {
-        return _temperature.GetScales();
+        TargetScale = GetScaleByCode(scaleCode);
     }
 
     public double GetTargetTemperature()
     {
-        return TargetTemperature;
+        return GetTemperature(TargetScale);
     }
 
-    public TemperatureScale GetSourceScale()
+    public double GetTemperature(ITemperatureScale scale)
     {
-        return SourceScale;
+        return scale.ConvertFromKelvin(Kelvin);
     }
 
-    public TemperatureScale GetTargetScale()
+    public ITemperatureScale GetScaleByCode(string code)
     {
-        return TargetScale;
+        var scale = Scales.Where(s => s.Code == code).First();
+
+        if (scale == null)
+        {
+            throw new ArgumentException("Invalid temperature code", nameof(code));
+        }
+
+        return scale;
     }
 
-    public double GetTemperature(TemperatureScale scale)
+    public void SetTemperature(double temperature, ITemperatureScale scale)
     {
-        return _temperature.GetTemperature(scale);
-    }
-
-    public void SetTemperature(double value, TemperatureScale scale)
-    { 
-        _temperature.SetTemperature(value, scale);
+        Kelvin = scale.ConvertToKelvin(temperature);
     }
 }

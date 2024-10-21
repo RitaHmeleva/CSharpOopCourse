@@ -106,6 +106,7 @@
             // cbTargetScale
             // 
             cbTargetScale.Dock = DockStyle.Fill;
+            cbTargetScale.DropDownStyle = ComboBoxStyle.DropDownList;
             cbTargetScale.FormattingEnabled = true;
             cbTargetScale.Location = new Point(3, 126);
             cbTargetScale.Name = "cbTargetScale";
@@ -126,6 +127,7 @@
             // cbSourceScale
             // 
             cbSourceScale.Dock = DockStyle.Fill;
+            cbSourceScale.DropDownStyle = ComboBoxStyle.DropDownList;
             cbSourceScale.FormattingEnabled = true;
             cbSourceScale.Location = new Point(3, 72);
             cbSourceScale.Name = "cbSourceScale";

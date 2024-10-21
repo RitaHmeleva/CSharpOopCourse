@@ -1,19 +1,19 @@
 ﻿namespace TemperatureTask.Models.TemperatureScales;
 
-internal class CelsiusScale : TemperatureScale
+internal class CelsiusScale : ITemperatureScale
 {
-    public override string Name => "Шкала Цельсия";
+    public string Name => "Шкала Цельсия";
 
-    public override string UnitsName => "Градусы Цельсия";
+    public string UnitsName => "Градусы Цельсия";
 
-    public override string Code => "Celsius";
+    public string Code => "Celsius";
 
-    public override double FromKelvin(double value)
+    public double ConvertFromKelvin(double value)
     {
         return value - 273.15;
     }
 
-    public override double ToKelvin(double value)
+    public double ConvertToKelvin(double value)
     {
         return value + 273.15;
     }

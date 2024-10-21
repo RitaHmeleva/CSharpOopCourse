@@ -5,21 +5,19 @@ namespace TemperatureTask.Controllers;
 
 internal class MainController
 {
-    private IMainForm _view;
-    private IMainModel _model;
+    private readonly IMainForm _view;
+    private readonly IMainModel _model;
 
     public MainController(IMainForm view, IMainModel model)
     {
         _view = view;
         _model = model;
 
-        _view.SetSourceScales(_model.GetScales().ToDictionary(k => k.Code, i => i.UnitsName));
+        _view.SetTemperatureScales(_model.Scales);
 
-        _view.SetTargetScales(_model.GetScales().ToDictionary(k => k.Code, i => i.UnitsName));
+        _view.SetSourceScale(_model.SourceScale.Code);
 
-        _view.SetSourceScale(_model.GetSourceScale().Code);
-
-        _view.SetTargetScale(_model.GetTargetScale().Code);
+        _view.SetTargetScale(_model.TargetScale.Code);
 
         _view.ConvertTemperature += ConvertTemperature;
 
@@ -28,20 +26,20 @@ internal class MainController
         _view.SaveTargetScale += SaveTargetScale;
     }
 
-    private void SaveSourceScale(object? sender, string scaleCode)
+    private void SaveSourceScale(string scaleCode)
     {
         _model.SetSourceScale(scaleCode);
     }
 
-    private void SaveTargetScale(object? sender, string scaleCode)
+    private void SaveTargetScale(string scaleCode)
     {
         _model.SetTargetScale(scaleCode);
     }
 
-    private void ConvertTemperature(object? sender, double value)
+    private void ConvertTemperature(double value)
     {
-        _model.SetTemperature(value, _model.GetSourceScale());
+        _model.SetTemperature(value, _model.SourceScale);
 
-        _view.SetTargetTemperature(Math.Round(_model.GetTargetTemperature(), 3, MidpointRounding.AwayFromZero));
+        _view.SetTargetTemperature(_model.TargetTemperature);
     }
 }

@@ -4,19 +4,19 @@ using TemperatureScales;
 
 internal interface IMainModel
 {
+    ITemperatureScale SourceScale { get; set; }
+
+    ITemperatureScale TargetScale { get; set; }
+
+    double TargetTemperature { get; }
+
+    IReadOnlyList<ITemperatureScale> Scales { get; set; }
+
     void SetSourceScale(string scaleCode);
 
     void SetTargetScale(string scaleCode);
 
-    double GetTargetTemperature();
+    double GetTemperature(ITemperatureScale scale);
 
-    double GetTemperature(TemperatureScale scale);
-
-    void SetTemperature(double value, TemperatureScale scale);
-
-    List<TemperatureScale> GetScales();
-
-    TemperatureScale GetSourceScale();
-
-    TemperatureScale GetTargetScale();
+    void SetTemperature(double value, ITemperatureScale scale);
 }
