@@ -9,30 +9,30 @@ internal class GraphMain
 
     static void Main(string[] args)
     {
-        int[,] array =
-    {
-        { 0, 1, 1, 1, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, 0, 0, 0, 1, 1, 0, 0, 0 },
-        { 1, 0, 0, 0, 0, 1, 0, 0, 0 },
-        { 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 1, 1, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { 0, 0, 0, 0, 0, 0, 0, 1, 0 }
-    };
+        int[,] matrix =
+        {
+            { 0, 1, 1, 1, 0, 0, 0, 0, 0 },
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 0, 0, 0, 1, 1, 0, 0, 0 },
+            { 1, 0, 0, 0, 0, 1, 0, 0, 0 },
+            { 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 1, 1, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 0 }
+        };
 
-        Graph matrix = new Graph(array);
+        Graph graph = new Graph(matrix);
 
         Console.WriteLine("Visit nodes:");
         Console.WriteLine("Обход в ширину:");
-        matrix.WidthTraversal(PrintNode);
+        graph.BreadthTraversal(PrintNode);
 
         Console.WriteLine("Обход в глубину:");
-        matrix.DepthTraversal(PrintNode);
+        graph.DepthTraversal(PrintNode);
 
         Console.WriteLine("Рекурсивный обход в глубину:");
-        matrix.RecursionDepthTraversal(PrintNode);
+        graph.DepthTraversalRecursive(PrintNode);
 
         Console.ReadLine();
     }

@@ -2,50 +2,52 @@
 
 public class Graph
 {
-    private int[,] _graph;
+    private readonly int[,] _matrix;
 
-    public Graph(int[,] graph)
+    public Graph(int[,] matrix)
     {
-        if (graph.GetLength(0) != graph.GetLength(1))
+        if (matrix.GetLength(0) != matrix.GetLength(1))
         {
-            throw new Exception($"Rows count {graph.GetLength(0)} should be = columns count {graph.GetLength(1)}");
+            throw new InvalidOperationException($"Rows count {matrix.GetLength(0)} should be = columns count {matrix.GetLength(1)}");
         }
 
-        this._graph = new int[graph.GetLength(0), graph.GetLength(1)];
+        _matrix = new int[matrix.GetLength(0), matrix.GetLength(1)];
 
-        Array.Copy(graph, this._graph, graph.Length);
+        Array.Copy(matrix, _matrix, matrix.Length);
     }
 
-    public void WidthTraversal(Action<int> action)
+    public void BreadthTraversal(Action<int> action)
     {
-        bool[] visited = new bool[_graph.GetLength(0)];
+        bool[] visited = new bool[_matrix.GetLength(0)];
 
         Queue<int> queue = new Queue<int>();
 
         for (int i = 0; i < visited.Length; i++)
         {
-            if (!visited[i])
+            if (visited[i])
             {
-                queue.Enqueue(i);
+                continue;
+            }
 
-                while (queue.Count > 0)
+            queue.Enqueue(i);
+
+            while (queue.Count > 0)
+            {
+                int vertex = queue.Dequeue();
+
+                if (visited[vertex])
                 {
-                    int vertex = queue.Dequeue();
+                    continue;
+                }
 
-                    if (!visited[vertex])
+                visited[vertex] = true;
+                action(vertex);
+
+                for (int j = 0; j < _matrix.GetLength(0); j++)
+                {
+                    if (_matrix[vertex, j] != 0 && !(visited[j]))
                     {
-                        visited[vertex] = true;
-                        action(vertex);
-
-                        for (int j = 0; j < _graph.GetLength(0); j++)
-                        {
-                            if (_graph[vertex, j] != 0 && !(visited[j]))
-                            {
-                                queue.Enqueue(j);
-                                visited[j] = true;
-                                action(j);
-                            }
-                        }
+                        queue.Enqueue(j);
                     }
                 }
             }
@@ -54,61 +56,65 @@ public class Graph
 
     public void DepthTraversal(Action<int> action)
     {
-        bool[] visited = new bool[_graph.GetLength(0)];
+        bool[] visited = new bool[_matrix.GetLength(0)];
 
         Stack<int> stack = new Stack<int>();
 
         for (int i = 0; i < visited.Length; i++)
         {
-            if (!visited[i])
+            if (visited[i])
             {
-                stack.Push(i);
+                continue;
             }
+
+            stack.Push(i);
 
             while (stack.Count > 0)
             {
                 int vertex = stack.Pop();
 
-                if (!visited[vertex])
+                if (visited[vertex])
                 {
-                    visited[vertex] = true;
-                    action(vertex);
+                    continue;
+                }
 
-                    for (int j = _graph.GetLength(0) - 1; j >= 0; j--)
+                visited[vertex] = true;
+                action(vertex);
+
+                for (int j = _matrix.GetLength(0) - 1; j >= 0; j--)
+                {
+                    if (_matrix[vertex, j] != 0 && !visited[j])
                     {
-                        if (_graph[vertex, j] != 0 && !(visited[j]))
-                        {
-                            stack.Push(j);
-                        }
+                        stack.Push(j);
                     }
                 }
             }
         }
     }
 
-    public void RecursionDepthTraversal(Action<int> action)
+    public void DepthTraversalRecursive(Action<int> action)
     {
-        bool[] visited = new bool[_graph.GetLength(0)];
+        bool[] visited = new bool[_matrix.GetLength(0)];
 
         for (int i = 0; i < visited.Length; i++)
         {
             if (!visited[i])
             {
-                RecursionDepthTraversal(i, visited, action);
+                DepthTraversalRecursive(i, visited, action);
             }
         }
     }
 
-    public void RecursionDepthTraversal(int i, bool[] visited, Action<int> action)
+    private void DepthTraversalRecursive(int vertex, bool[] visited, Action<int> action)
     {
-        visited[i] = true;
-        action(i);
+        visited[vertex] = true;
+        action(vertex);
 
-        for (int j = 0; j < _graph.GetLength(0); j++)
+        for (int j = 0; j < _matrix.GetLength(0); j++)
         {
-            if (_graph[i, j] != 0 && !(visited[j]))
+            if (_matrix[vertex, j] != 0 && !visited[j])
             {
-                RecursionDepthTraversal(j, visited, action);
+                DepthTraversalRecursive(j, visited, action);
             }
         }
     }
