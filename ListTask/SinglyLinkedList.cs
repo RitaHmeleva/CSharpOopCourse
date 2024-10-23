@@ -143,7 +143,7 @@ class SinglyLinkedList<T>
     {
         for (ListItem<T>? currentItem = _head, previousItem = null; currentItem is not null; previousItem = currentItem, currentItem = currentItem.Next)
         {
-            if ((currentItem.Data is null && data is null) || Equals(data, currentItem.Data))
+            if (Equals(data, currentItem.Data))
             {
                 if (previousItem is null)
                 {
