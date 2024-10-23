@@ -11,8 +11,6 @@ internal class HashTable<T> : ICollection<T>
 
     private const int DefaultSize = 101;
 
-    public bool IsReadOnly => false;
-
     public HashTable()
     {
         _lists = new List<T>[DefaultSize];
@@ -33,28 +31,41 @@ internal class HashTable<T> : ICollection<T>
         get; private set;
     }
 
+    public bool IsReadOnly => false;
+
     public override string ToString()
     {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('[');
 
+        int i = 0;
+
         foreach (T item in this)
         {
             stringBuilder.Append(item);
-            stringBuilder.Append(',');
-        }
 
-        stringBuilder.Append('\b');
+            if (i < Count - 1)
+            {
+                stringBuilder.Append(", ");
+            }
+
+            i++;
+        }
 
         stringBuilder.Append(']');
 
         return stringBuilder.ToString();
     }
 
+    private int GetIndex(T item)
+    {
+        return item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
+    }
+
     public void Add(T item)
     {
-        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = GetIndex(item);
 
         if (_lists[index] == null)
         {
@@ -71,12 +82,14 @@ internal class HashTable<T> : ICollection<T>
 
     public void Clear()
     {
+        if (Count == 0)
+        {
+            return;
+        }
+
         for (int i = 0; i < _lists.Length; i++)
         {
-            if (_lists[i] is not null)
-            {
-                _lists[i]?.Clear();
-            }
+            _lists[i]?.Clear();
         }
 
         Count = 0;
@@ -85,50 +98,47 @@ internal class HashTable<T> : ICollection<T>
 
     public bool Contains(T item)
     {
-        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = GetIndex(item);
 
-        if (_lists[index] is not null)
-        {
-            return _lists[index]!.Contains(item);
-        }
-
-        return false;
+        return _lists[index] is not null && _lists[index]!.Contains(item);
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
         if (array is null)
         {
-            throw new ArgumentNullException(nameof(array), "Array should be > 0");
+            throw new ArgumentNullException(nameof(array), "Array is null");
         }
 
         if (arrayIndex < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be > 0");
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be >= 0");
         }
 
-        if (array.Rank > 1 || array.Length - arrayIndex < Count)
+        if (array.Length - arrayIndex < Count)
         {
-            throw new ArgumentException("Array is multidimensional or not enough space in array", nameof(array));
+            throw new ArgumentException("Not enough space in array", nameof(array));
         }
+
+        int index = arrayIndex;
 
         foreach (T item in this)
         {
-            array[arrayIndex] = item;
-            arrayIndex++;
+            array[index] = item;
+            index++;
         }
     }
 
     public bool Remove(T item)
     {
-        int index = item is null ? 0 : Math.Abs(item.GetHashCode() % _lists.Length);
+        int index = GetIndex(item);
 
-        if (_lists[index] is not null)
+        if (_lists[index]!.Remove(item))
         {
             _version++;
             Count--;
 
-            return _lists[index]!.Remove(item);
+            return true;
         }
 
         return false;
@@ -145,7 +155,9 @@ internal class HashTable<T> : ICollection<T>
                 foreach (T item in list)
                 {
                     if (initialVersion != _version)
+                    {
                         throw new InvalidOperationException("HashTable has changed.");
+                    }
 
                     yield return item;
                 }
@@ -155,6 +167,6 @@ internal class HashTable<T> : ICollection<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return (IEnumerator)GetEnumerator();
+        return GetEnumerator();
     }
 }
