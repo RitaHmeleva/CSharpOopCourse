@@ -10,23 +10,25 @@ internal class CsvMain
 {
     static void Main(string[] args)
     {
-        using (StreamReader reader = new StreamReader("..\\..\\csv.txt"))
+        try
         {
-            using StreamWriter writer = new StreamWriter("..\\..\\output.txt");
+            Csv csv = new Csv();
 
-            string currentLine;
-            int index = 0;
-            char[] charArray = null;
+            csv.ReadCsvToHtml("..\\..\\input.csv", "..\\..\\output.html");
 
-            while ((currentLine = reader.ReadLine()) != null)
-            {
-                charArray = currentLine.ToCharArray();
-            }
-
-            for (int i = 0; i < charArray.Length; i++)
-            {
-
-            }
+            Console.WriteLine("Done!");
+        }
+        catch (FileNotFoundException fileNotFoundException)
+        {
+            Console.WriteLine(fileNotFoundException.Message);
+        }
+        catch (IOException ioException)
+        {
+            Console.WriteLine(ioException.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
 
         Console.ReadLine();
