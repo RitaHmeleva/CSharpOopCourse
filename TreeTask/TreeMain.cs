@@ -2,9 +2,9 @@
 
 internal class TreeMain
 {
-    static void PrintData(int data)
+    public static void PrintData(TreeNode<int> node)
     {
-        Console.WriteLine(data);
+        Console.WriteLine(node.Data);
     }
 
     static void Main(string[] args)
@@ -13,23 +13,20 @@ internal class TreeMain
 
         tree.InsertNode(12);
         tree.InsertNode(3);
-        tree.InsertNode(14);
-        tree.InsertNode(1);
-        tree.InsertNode(5);
-        tree.InsertNode(13);
-        tree.InsertNode(16);
-        tree.InsertNode(4);
-        tree.InsertNode(9);
         tree.InsertNode(15);
-        tree.InsertNode(7);
+        tree.InsertNode(14);
+        tree.InsertNode(5);
+        tree.InsertNode(1);
+        tree.InsertNode(9);
+        tree.InsertNode(13);
+        tree.InsertNode(4);
         tree.InsertNode(10);
-        tree.InsertNode(6);
-        tree.InsertNode(8);
         tree.InsertNode(11);
+        tree.InsertNode(16);
 
         Console.WriteLine(tree);
 
-        tree.DeleteNode(12);
+        tree.DeleteNode(5);
         Console.WriteLine("Дерево:");
         Console.WriteLine(tree);
 
@@ -41,7 +38,7 @@ internal class TreeMain
         tree.DepthTraversal(PrintData);
 
         Console.WriteLine("Обход в ширину:");
-        tree.BreadthFirstSearch(PrintData);
+        tree.BreadthTraversal(PrintData);
 
         Console.WriteLine("Число элементов: " + tree.Count);
 
