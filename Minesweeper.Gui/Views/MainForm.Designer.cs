@@ -208,7 +208,7 @@ partial class MainForm
         // 
         faceButton.BackColor = Color.SteelBlue;
         faceButton.BackgroundImageLayout = ImageLayout.Center;
-        faceButton.ImageIndex = 0;
+        faceButton.ImageIndex = 3;
         faceButton.ImageList = buttonImageList;
         faceButton.Location = new Point(457, 10);
         faceButton.Margin = new Padding(0);
