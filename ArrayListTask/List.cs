@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Text;
 
 namespace ArrayListTask;
@@ -8,7 +7,7 @@ public class List<T> : IList<T>
 {
     private const int DefaultCapacity = 10;
     private T[] _items;
-    private long _version = 1;
+    private long _version = 0;
 
     public List()
     {
@@ -41,9 +40,12 @@ public class List<T> : IList<T>
                 throw new ArgumentException($"Capacity {value} should be >= 0", nameof(value));
             }
 
-            Array.Resize(ref _items, value);
+            if (value < Count)
+            {
+                throw new ArgumentOutOfRangeException($"Capacity {value} should be >= count {Count}", nameof(value));
+            }
 
-            _version++;
+            Array.Resize(ref _items, value);
         }
     }
 
@@ -52,7 +54,6 @@ public class List<T> : IList<T>
         if (Capacity * 0.9 > Count)
         {
             Capacity = Count;
-            _version++;
         }
     }
 
@@ -67,16 +68,14 @@ public class List<T> : IList<T>
 
         stringBuilder.Append('[');
 
-        if (Count > 0)
+        for (int i = 0; i < Count - 1; i++)
         {
-            for (int i = 0; i < Count - 1; i++)
-            {
-                stringBuilder.Append(_items[i])
+            stringBuilder
+                .Append(_items[i])
                 .Append(", ");
-            }
-
-            stringBuilder.Append(_items[Count - 1]);
         }
+
+        stringBuilder.Append(_items[Count - 1]);
 
         stringBuilder.Append(']');
 
@@ -89,22 +88,18 @@ public class List<T> : IList<T>
     {
         get
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count - 1}");
-            }
+            CheckIndex(index);
 
             return _items[index];
         }
 
         set
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count - 1}");
-            }
+            CheckIndex(index);
 
             _items[index] = value;
+
+            _version++;
         }
     }
 
@@ -142,19 +137,9 @@ public class List<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (_items[i] is null)
+            if (!Equals(_items[i], list._items[i]))
             {
-                if (list._items[i] is not null)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!_items[i]!.Equals(list._items[i]))
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
@@ -178,12 +163,17 @@ public class List<T> : IList<T>
         Capacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
     }
 
-    public void RemoveAt(int index)
+    private void CheckIndex(int index)
     {
         if (index < 0 || index >= Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} should be between 0 and {Count - 1}");
         }
+    }
+
+    public void RemoveAt(int index)
+    {
+        CheckIndex(index);
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
 
@@ -219,6 +209,16 @@ public class List<T> : IList<T>
 
     public void Clear()
     {
+        if (Count == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < Count; i++)
+        {
+            _items[i] = default!;
+        }
+
         Count = 0;
         _version++;
     }
@@ -232,19 +232,18 @@ public class List<T> : IList<T>
     {
         if (array is null)
         {
-            throw new ArgumentNullException(nameof(array), "Array should be > 0");
+            throw new ArgumentNullException(nameof(array), "Array is null");
         }
 
         if (arrayIndex < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be > 0");
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Array index {arrayIndex} should be >= 0");
         }
 
-        if (array.Rank > 1 || array.Length - arrayIndex < Count)
+        if (array.Length - arrayIndex < Count)
         {
-            throw new ArgumentException("Array is multidimensional or not enough space in array", nameof(array));
+            throw new ArgumentException("Not enough space in array", nameof(array));
         }
-
 
         Array.Copy(_items, 0, array, arrayIndex, Count);
     }
@@ -270,7 +269,9 @@ public class List<T> : IList<T>
         for (int i = 0; i < Count; i++)
         {
             if (initialVersion != _version)
+            {
                 throw new InvalidOperationException("Array list has changed.");
+            }
 
             yield return _items[i];
         }
@@ -278,6 +279,6 @@ public class List<T> : IList<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return (IEnumerator)GetEnumerator();
+        return GetEnumerator();
     }
 }
