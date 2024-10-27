@@ -1,3 +1,5 @@
+using MinesweeperUITask.Controllers;
+
 namespace MinesweeperUITask
 {
     internal static class Program
@@ -11,7 +13,12 @@ namespace MinesweeperUITask
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            
+            var form = new Minesweeper.Gui.Views.MainForm();
+            var model = new Minesweeper.Logic.Models.GameModel();
+            var controller = new MainController(form, model);
+
+            Application.Run(form);
         }
     }
 }
