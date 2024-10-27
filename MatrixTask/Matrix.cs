@@ -44,15 +44,15 @@ internal class Matrix
             throw new ArgumentException("Array size should be not 0", nameof(array));
         }
 
-        _rows = new Vector[array.GetLength(0)];
-        int columnsCount = array.GetLength(0);
-        int rowsCount = array.GetLength(1);
+        int rowsCount = array.GetLength(0);
+        int columnsCount = array.GetLength(1);
+        _rows = new Vector[rowsCount];
 
-        for (int i = 0; i < columnsCount; i++)
+        for (int i = 0; i < rowsCount; i++)
         {
-            _rows[i] = new Vector(rowsCount);
+            _rows[i] = new Vector(columnsCount);
 
-            for (int j = 0; j < rowsCount; j++)
+            for (int j = 0; j < columnsCount; j++)
             {
                 _rows[i][j] = array[i, j];
             }
@@ -73,7 +73,6 @@ internal class Matrix
         {
             maxVectorSize = Math.Max(rows[i].Size, maxVectorSize);
         }
-
 
         for (int i = 0; i < rows.Length; i++)
         {
