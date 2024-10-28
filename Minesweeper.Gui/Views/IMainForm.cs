@@ -1,6 +1,4 @@
-﻿using Minesweeper.Gui.ViewsEventArgs;
-
-namespace Minesweeper.Gui.Views;
+﻿namespace Minesweeper.Gui.Views;
 
 public interface IMainForm
 {
@@ -22,7 +20,7 @@ public interface IMainForm
 
     void OpenMine(int rowIndex, int columnIndex, bool hasFlag);
 
-    event EventHandler<GameLevelSelectedEventArgs> GameLevelSelected;
+    event Action<(int RowsCount, int ColumnsCount, int MinesCount)> GameLevelSelected;
 
     event Action<int, int>? OpenCell;
 

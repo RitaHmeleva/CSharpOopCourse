@@ -38,7 +38,7 @@ partial class MainForm
         miRecords = new ToolStripMenuItem();
         toolStripMenuItem3 = new ToolStripSeparator();
         miExit = new ToolStripMenuItem();
-        оПрограммеToolStripMenuItem = new ToolStripMenuItem();
+        miAbout = new ToolStripMenuItem();
         buttonImageList = new ImageList(components);
         imageListMedium = new ImageList(components);
         imageListSmall = new ImageList(components);
@@ -46,22 +46,22 @@ partial class MainForm
         faceButton = new Button();
         lbTime = new Label();
         lbMinesCount = new Label();
-        pictureBox1 = new PictureBox();
-        pictureBox2 = new PictureBox();
+        pbTimer = new PictureBox();
+        pbMine = new PictureBox();
         pnField = new Panel();
         pbField = new PictureBox();
         tmGame = new System.Windows.Forms.Timer(components);
         menuStrip1.SuspendLayout();
         pnGame.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)pbTimer).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)pbMine).BeginInit();
         pnField.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)pbField).BeginInit();
         SuspendLayout();
         // 
         // menuStrip1
         // 
-        menuStrip1.Items.AddRange(new ToolStripItem[] { miGame, оПрограммеToolStripMenuItem });
+        menuStrip1.Items.AddRange(new ToolStripItem[] { miGame, miAbout });
         menuStrip1.Location = new Point(0, 0);
         menuStrip1.Name = "menuStrip1";
         menuStrip1.Padding = new Padding(8, 3, 0, 3);
@@ -113,12 +113,12 @@ partial class MainForm
         miExit.Text = "Выход";
         miExit.Click += miExit_Click;
         // 
-        // оПрограммеToolStripMenuItem
+        // miAbout
         // 
-        оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-        оПрограммеToolStripMenuItem.Size = new Size(94, 19);
-        оПрограммеToolStripMenuItem.Text = "О программе";
-        оПрограммеToolStripMenuItem.Click += aboutProgramToolStripMenuItem_Click;
+        miAbout.Name = "miAbout";
+        miAbout.Size = new Size(94, 19);
+        miAbout.Text = "О программе";
+        miAbout.Click += miAbout_Click;
         // 
         // buttonImageList
         // 
@@ -183,16 +183,16 @@ partial class MainForm
         pnGame.ColumnCount = 7;
         pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         pnGame.ColumnStyles.Add(new ColumnStyle());
-        pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+        pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
         pnGame.ColumnStyles.Add(new ColumnStyle());
-        pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+        pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
         pnGame.ColumnStyles.Add(new ColumnStyle());
         pnGame.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         pnGame.Controls.Add(faceButton, 3, 0);
         pnGame.Controls.Add(lbTime, 2, 0);
         pnGame.Controls.Add(lbMinesCount, 4, 0);
-        pnGame.Controls.Add(pictureBox1, 1, 0);
-        pnGame.Controls.Add(pictureBox2, 5, 0);
+        pnGame.Controls.Add(pbTimer, 1, 0);
+        pnGame.Controls.Add(pbMine, 5, 0);
         pnGame.Controls.Add(pnField, 0, 1);
         pnGame.Location = new Point(0, 25);
         pnGame.Margin = new Padding(0);
@@ -223,10 +223,10 @@ partial class MainForm
         lbTime.AutoSize = true;
         lbTime.Dock = DockStyle.Fill;
         lbTime.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-        lbTime.Location = new Point(391, 10);
+        lbTime.Location = new Point(381, 10);
         lbTime.Margin = new Padding(4, 0, 4, 0);
         lbTime.Name = "lbTime";
-        lbTime.Size = new Size(62, 52);
+        lbTime.Size = new Size(72, 52);
         lbTime.TabIndex = 1;
         lbTime.Text = "100";
         lbTime.TextAlign = ContentAlignment.MiddleLeft;
@@ -239,37 +239,36 @@ partial class MainForm
         lbMinesCount.Location = new Point(513, 10);
         lbMinesCount.Margin = new Padding(4, 0, 4, 0);
         lbMinesCount.Name = "lbMinesCount";
-        lbMinesCount.Size = new Size(62, 52);
+        lbMinesCount.Size = new Size(72, 52);
         lbMinesCount.TabIndex = 2;
         lbMinesCount.Text = "100";
         lbMinesCount.TextAlign = ContentAlignment.MiddleRight;
         // 
-        // pictureBox1
+        // pbTimer
         // 
-        pictureBox1.Image = Properties.Resources.stopwatch;
-        pictureBox1.Location = new Point(335, 10);
-        pictureBox1.Margin = new Padding(0);
-        pictureBox1.Name = "pictureBox1";
-        pictureBox1.Size = new Size(52, 52);
-        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-        pictureBox1.TabIndex = 3;
-        pictureBox1.TabStop = false;
+        pbTimer.Image = Properties.Resources.stopwatch;
+        pbTimer.Location = new Point(325, 10);
+        pbTimer.Margin = new Padding(0);
+        pbTimer.Name = "pbTimer";
+        pbTimer.Size = new Size(52, 52);
+        pbTimer.SizeMode = PictureBoxSizeMode.Zoom;
+        pbTimer.TabIndex = 3;
+        pbTimer.TabStop = false;
         // 
-        // pictureBox2
+        // pbMine
         // 
-        pictureBox2.Image = Properties.Resources.Mine48;
-        pictureBox2.Location = new Point(579, 10);
-        pictureBox2.Margin = new Padding(0);
-        pictureBox2.Name = "pictureBox2";
-        pictureBox2.Size = new Size(52, 52);
-        pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-        pictureBox2.TabIndex = 4;
-        pictureBox2.TabStop = false;
+        pbMine.Image = Properties.Resources.Mine48;
+        pbMine.Location = new Point(589, 10);
+        pbMine.Margin = new Padding(0);
+        pbMine.Name = "pbMine";
+        pbMine.Size = new Size(52, 52);
+        pbMine.SizeMode = PictureBoxSizeMode.Zoom;
+        pbMine.TabIndex = 4;
+        pbMine.TabStop = false;
         // 
         // pnField
         // 
         pnField.AutoScroll = true;
-        pnField.BorderStyle = BorderStyle.Fixed3D;
         pnGame.SetColumnSpan(pnField, 7);
         pnField.Controls.Add(pbField);
         pnField.Location = new Point(10, 72);
@@ -280,6 +279,7 @@ partial class MainForm
         // 
         // pbField
         // 
+        pbField.BorderStyle = BorderStyle.Fixed3D;
         pbField.Location = new Point(-2, -2);
         pbField.Margin = new Padding(0);
         pbField.Name = "pbField";
@@ -309,8 +309,8 @@ partial class MainForm
         menuStrip1.PerformLayout();
         pnGame.ResumeLayout(false);
         pnGame.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-        ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+        ((System.ComponentModel.ISupportInitialize)pbTimer).EndInit();
+        ((System.ComponentModel.ISupportInitialize)pbMine).EndInit();
         pnField.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)pbField).EndInit();
         ResumeLayout(false);
@@ -323,7 +323,7 @@ partial class MainForm
     private ToolStripMenuItem выйтиToolStripMenuItem;
     private ToolStripMenuItem miGame;
     private ToolStripMenuItem miNewGame;
-    private ToolStripMenuItem оПрограммеToolStripMenuItem;
+    private ToolStripMenuItem miAbout;
     private ImageList imageListMedium;
     private ToolStripSeparator toolStripMenuItem1;
     private ImageList imageListSmall;
@@ -332,8 +332,8 @@ partial class MainForm
     private Button faceButton;
     private Label lbTime;
     private Label lbMinesCount;
-    private PictureBox pictureBox1;
-    private PictureBox pictureBox2;
+    private PictureBox pbTimer;
+    private PictureBox pbMine;
     private Panel pnField;
     private ToolStripSeparator toolStripMenuItem2;
     private ToolStripMenuItem miRecords;

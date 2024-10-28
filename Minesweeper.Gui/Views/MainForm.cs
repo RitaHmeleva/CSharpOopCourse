@@ -1,5 +1,3 @@
-using Minesweeper.Gui.ViewsEventArgs;
-
 namespace Minesweeper.Gui.Views;
 
 public partial class MainForm : Form, IMainForm
@@ -30,7 +28,6 @@ public partial class MainForm : Form, IMainForm
     private List<Image> imagesSmall = new List<Image>();
     private List<Image> imagesMedium = new List<Image>();
 
-
     public event Action<int, int>? ToggleFlag;
 
     public event Action? StartNewGame;
@@ -39,7 +36,7 @@ public partial class MainForm : Form, IMainForm
 
     public event Action<int, int>? OpenCell;
 
-    public event EventHandler<GameLevelSelectedEventArgs>? GameLevelSelected;
+    public event Action<(int RowsCount, int ColumnsCount, int MinesCount)>? GameLevelSelected;
 
     public event Action? RecordsTableRequested;
 
@@ -64,6 +61,7 @@ public partial class MainForm : Form, IMainForm
         _cellSize = imageListMedium.ImageSize.Width;
 
         pnField.MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width - 50, Screen.PrimaryScreen.Bounds.Height - 200);
+        pnField.MinimumSize = new Size(faceButton.Width + pbTimer.Width + pbMine.Width + 160, 0);
         pnField.AutoSize = true;
         pnField.AutoSizeMode = AutoSizeMode.GrowAndShrink;
 
@@ -154,11 +152,7 @@ public partial class MainForm : Form, IMainForm
 
         Cursor = Cursors.WaitCursor;
 
-        await CreateField();
-
-        pbField.Invalidate();
-
-        Cursor = Cursors.Default;
+        pbField.Enabled = false;
 
         GameTime = 0;
         GameMinesCount = MinesCount;
@@ -168,7 +162,7 @@ public partial class MainForm : Form, IMainForm
 
         tmGame.Enabled = false;
 
-        GameLevelSelected?.Invoke(this, new GameLevelSelectedEventArgs(RowsCount, ColumnsCount, MinesCount));
+        GameLevelSelected?.Invoke((RowsCount, ColumnsCount, MinesCount));
     }
 
     public async Task SetGameReady()
@@ -176,27 +170,13 @@ public partial class MainForm : Form, IMainForm
         await CreateField();
 
         pbField.Enabled = true;
+
+        Cursor = Cursors.Default;
     }
 
     public async Task CreateField()
     {
-        if (pbField.Image == null || pbField.Image.Height != RowsCount * _cellSize || pbField.Image.Width != ColumnsCount * _cellSize)
-        {
-            pbField.Image = new Bitmap(ColumnsCount * _cellSize, RowsCount * _cellSize);
-        }
-
-        pbField.Size = new Size(ColumnsCount * _cellSize, RowsCount * _cellSize);
-
-        Graphics graphics = Graphics.FromImage(pbField.Image);
-
-        await CreateFieldAsync(RowsCount, ColumnsCount, graphics);
-
-        pbField.Invalidate();
-    }
-
-    private void CreateField(int rowsCount, int columnsCount, Graphics graphics)
-    {
-        if (rowsCount > 20 || columnsCount > 40)
+        if (RowsCount > 20 || ColumnsCount > 40)
         {
             images = imagesSmall;
             _cellSize = imageListSmall.ImageSize.Width;
@@ -207,28 +187,49 @@ public partial class MainForm : Form, IMainForm
             _cellSize = imageListMedium.ImageSize.Width;
         }
 
-        if (_imageIndexes == null || _imageIndexes.GetLength(0) != rowsCount || _imageIndexes.GetLength(1) != columnsCount)
+        if (_imageIndexes == null || _imageIndexes.GetLength(0) != RowsCount || _imageIndexes.GetLength(1) != ColumnsCount)
         {
-            _imageIndexes = new CellImageIndex[rowsCount, columnsCount];
+            _imageIndexes = new CellImageIndex[RowsCount, ColumnsCount];
         }
 
+        if (pbField.Image == null || pbField.Image.Height != RowsCount * _cellSize || pbField.Image.Width != ColumnsCount * _cellSize)
+        {
+            pbField.Image = new Bitmap(ColumnsCount * _cellSize, RowsCount * _cellSize);
+        }
+
+        pbField.Size = new Size(ColumnsCount * _cellSize + 4, RowsCount * _cellSize + 4);
+
+        pbField.Location = new Point(0, 0);
+        if (pbField.Width < pnField.Width)
+        {
+            pbField.Location = new Point((pnField.Width - pbField.Width) / 2, 0);
+        }
+
+        using (Graphics graphics = Graphics.FromImage(pbField.Image))
+        {
+            await CreateFieldAsync(RowsCount, ColumnsCount, graphics);
+        }
+
+        pbField.Invalidate();
+    }
+
+    private void CreateField(int rowsCount, int columnsCount, Graphics graphics)
+    {
         for (int i = 0; i < rowsCount; i++)
         {
             for (int j = 0; j < columnsCount; j++)
             {
-                _imageIndexes[i, j] = CellImageIndex.Closed;
+                _imageIndexes![i, j] = CellImageIndex.Closed;
             }
         }
 
-        for (int i = 0; i < _imageIndexes.GetLength(0); i++)
+        for (int i = 0; i < _imageIndexes!.GetLength(0); i++)
         {
             for (int j = 0; j < _imageIndexes.GetLength(1); j++)
             {
                 graphics.DrawImage(images[(int)CellImageIndex.Closed], j * _cellSize, i * _cellSize);
             }
         }
-
-        graphics.Dispose();
     }
 
     private async Task CreateFieldAsync(int rowsCount, int columnsCount, Graphics graphics)
@@ -330,7 +331,7 @@ public partial class MainForm : Form, IMainForm
         StartGame();
     }
 
-    private void aboutProgramToolStripMenuItem_Click(object sender, EventArgs e)
+    private void miAbout_Click(object sender, EventArgs e)
     {
         MessageBox.Show("«Сапёр» (англ. Minesweeper) — игра-головоломка, главной задачей которой является найти все «заминированные» клетки.", "Сапёр", MessageBoxButtons.OK, MessageBoxIcon.None);
     }

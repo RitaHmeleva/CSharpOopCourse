@@ -86,7 +86,7 @@ internal class MainController
         _view.SetGameReady();
     }
 
-    private void GameLevelSelected(object? sender, Minesweeper.Gui.ViewsEventArgs.GameLevelSelectedEventArgs e)
+    private void GameLevelSelected((int RowsCount, int ColumnsCount, int MinesCount) e)
     {
         _model.CreateField(e.RowsCount, e.ColumnsCount, e.MinesCount);
     }

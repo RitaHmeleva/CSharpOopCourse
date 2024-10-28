@@ -24,8 +24,6 @@ public class GameModel : IGameModel
 
     private List<GameRecord> _gameRecords = new List<GameRecord>();
 
-    private List<int[]> _modifiedCellsIndexes = new List<int[]>();
-
     public event EventHandler<int[]>? MinesAroundCounted;
 
     public event Action<(int RowIndex, int ColumnIndex, bool HasFlag)>? FlagToggled;
@@ -42,7 +40,6 @@ public class GameModel : IGameModel
 
     public GameModel()
     {
-
         if (File.Exists("records"))
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -142,7 +139,6 @@ public class GameModel : IGameModel
 
     public List<(string Level, int Time, string GamerName)> GetRecordsTable()
     {
-
         int d = _gameRecords.Count;
 
         List<(string Level, int Time, string GamerName)> recordsTable =
@@ -154,11 +150,6 @@ public class GameModel : IGameModel
         return recordsTable;
     }
 
-    public List<int[]> GetModifiedCellsIndexes()
-    {
-        return _modifiedCellsIndexes;
-    }
-
     public void ToggleFlag(int row, int column)
     {
         _cells![row, column].HasFlag = !_cells[row, column].HasFlag;
@@ -167,9 +158,9 @@ public class GameModel : IGameModel
     }
 
 
-    private void MakeCellOpened(int RowIndex, int ColumnIndex)
+    private void MakeCellOpened(int RowIndex, int ColumnIndex, int minesCount)
     {
-        CellOpened?.Invoke((RowIndex, ColumnIndex, _cells![RowIndex, ColumnIndex].MinesAroundCount));
+        CellOpened?.Invoke((RowIndex, ColumnIndex, minesCount));
 
         OpenCellsCount++;
 
@@ -201,7 +192,9 @@ public class GameModel : IGameModel
             return;
         }
 
-        var queue = new System.Collections.Generic.Queue<(int RowIndex, int ColumnIndex)>();
+        int minesCount;
+
+        var queue = new Queue<(int RowIndex, int ColumnIndex)>();
 
         queue.Enqueue((row, column));
 
@@ -213,38 +206,19 @@ public class GameModel : IGameModel
             {
                 _cells[cell.RowIndex, cell.ColumnIndex].IsOpen = true;
 
-                CountMinesAround(cell.RowIndex, cell.ColumnIndex);
+                minesCount = CountMinesAround(cell.RowIndex, cell.ColumnIndex);
 
-                MakeCellOpened(cell.RowIndex, cell.ColumnIndex);
-            }
+                MakeCellOpened(cell.RowIndex, cell.ColumnIndex, minesCount);
 
-            if (_cells[cell.RowIndex, cell.ColumnIndex].MinesAroundCount == 0)
-            {
-                for (int i = cell.RowIndex - 1; i <= cell.RowIndex + 1; i++)
+                if (minesCount == 0)
                 {
-                    if (i < 0 || i == RowsCount)
+                    WalkAround(cell.RowIndex, cell.ColumnIndex, (i, j) =>
                     {
-                        continue;
-                    }
-
-                    for (int j = cell.ColumnIndex - 1; j <= cell.ColumnIndex + 1; j++)
-                    {
-                        if (j < 0 || j == ColumnsCount || _cells[i, j].HasMine || _cells[i, j].HasFlag || _cells[i, j].MinesAroundCount != -1 || _cells[i, j].IsOpen)
-                        {
-                            continue;
-                        }
-
-                        int minesCount = CountMinesAround(i, j);
-
-                        if (minesCount == 0)
+                        if (!_cells[i, j].HasMine && !_cells[i, j].IsOpen && !queue.Contains((i, j)))
                         {
                             queue.Enqueue((i, j));
                         }
-                        else
-                        {
-                            _modifiedCellsIndexes.Add(new int[] { i, j, minesCount });
-                        }
-                    }
+                    });
                 }
             }
         }
@@ -252,79 +226,22 @@ public class GameModel : IGameModel
 
     private int CountMinesAround(int row, int column)
     {
+        int count = 0;
 
-        if (_cells![row, column].MinesAroundCount == -1)
+        WalkAround(row, column, (i, j) =>
         {
-            _cells[row, column].MinesAroundCount = 0;
-
-            for (int i = row - 1; i <= row + 1; i++)
+            if (_cells![i, j].HasMine)
             {
-                if (i < 0 || i == RowsCount)
-                {
-                    continue;
-                }
-
-                for (int j = column + 1; j > column - 2; j--)
-                {
-                    if (j < 0 || j == ColumnsCount)
-                    {
-                        continue;
-                    }
-
-                    if (_cells[i, j].HasMine)
-                    {
-                        _cells[row, column].MinesAroundCount++;
-                    }
-                }
+                count++;
             }
-        }
 
-        if (_cells[row, column].MinesAroundCount > 0)
-        {
-            if (!_cells[row, column].IsOpen)
-            {
-                MakeCellOpened(row, column);
-            }
-        }
+        });
 
-        return _cells[row, column].MinesAroundCount;
+        return count;
     }
 
-    public void OpenCell2(int row, int column)
+    private void WalkAround(int row, int column, Action<int, int> action)
     {
-        if (_cells![row, column].HasMine)
-        {
-            for (int i = 0; i < RowsCount; i++)
-            {
-                for (int j = 0; j < ColumnsCount; j++)
-                {
-                    if (_cells[i, j].HasMine)
-                    {
-                        MineOpened?.Invoke((i, j, _cells[i, j].HasFlag));
-                    }
-                }
-            }
-
-            GameLost?.Invoke((row, column));
-
-            return;
-        }
-
-        _cells[row, column].IsOpen = true;
-        CountMinesAround(row, column);
-
-        if (_cells[row, column].MinesAroundCount == 0)
-        {
-            CellOpened?.Invoke((row, column, _cells[row, column].MinesAroundCount));
-
-            OpenCellsCount++;
-
-            if (OpenCellsCount == RowsCount * ColumnsCount - MinesCount)
-            {
-                GameWon?.Invoke();
-            }
-        }
-
         for (int i = row - 1; i <= row + 1; i++)
         {
             if (i < 0 || i == RowsCount)
@@ -334,22 +251,12 @@ public class GameModel : IGameModel
 
             for (int j = column - 1; j <= column + 1; j++)
             {
-                if (j < 0 || j == ColumnsCount || _cells[i, j].HasMine || _cells[i, j].HasFlag || _cells[i, j].MinesAroundCount != -1 || _cells[i, j].IsOpen)
+                if (j < 0 || j == ColumnsCount || (i == row && j == column))
                 {
                     continue;
                 }
 
-                _cells[row, column].IsOpen = true;
-                int minesCount = CountMinesAround(i, j);
-
-                if (minesCount == 0)
-                {
-                    OpenCell(i, j);
-                }
-                else
-                {
-                    _modifiedCellsIndexes.Add(new int[] { i, j, minesCount });
-                }
+                action(i, j);
             }
         }
     }

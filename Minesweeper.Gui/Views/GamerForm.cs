@@ -12,11 +12,16 @@ public partial class GamerForm : Form
         InitializeComponent();
     }
 
+    private void LevelForm_Load(object sender, EventArgs e)
+    {
+        tbGamerName.Text = GamerName;
+    }
+
     private void btOK_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrEmpty(tbGamerName.Text))
         {
-            MessageBox.Show("Имя не может быть пустным.");
+            MessageBox.Show("Имя не может быть пустым.");
 
             return;
         }
@@ -28,8 +33,5 @@ public partial class GamerForm : Form
         Close();
     }
 
-    private void LevelForm_Load(object sender, EventArgs e)
-    {
-        tbGamerName.Text = GamerName;
-    }
+
 }

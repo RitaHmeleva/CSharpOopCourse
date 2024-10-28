@@ -44,18 +44,19 @@
             gvRecords.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             gvRecords.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3 });
             gvRecords.Dock = DockStyle.Fill;
-            gvRecords.Location = new Point(0, 0);
+            gvRecords.Location = new Point(10, 10);
             gvRecords.Name = "gvRecords";
             gvRecords.ReadOnly = true;
             gvRecords.RowHeadersVisible = false;
             gvRecords.RowTemplate.Height = 25;
             gvRecords.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            gvRecords.Size = new Size(546, 349);
+            gvRecords.Size = new Size(526, 329);
             gvRecords.TabIndex = 1;
             // 
             // Column1
             // 
             Column1.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Column1.DataPropertyName = "Level";
             Column1.HeaderText = "Уровень";
             Column1.Name = "Column1";
             Column1.ReadOnly = true;
@@ -63,6 +64,7 @@
             // Column2
             // 
             Column2.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Column2.DataPropertyName = "Time";
             Column2.HeaderText = "Время";
             Column2.Name = "Column2";
             Column2.ReadOnly = true;
@@ -70,6 +72,7 @@
             // Column3
             // 
             Column3.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Column3.DataPropertyName = "GamerName";
             Column3.HeaderText = "Игрок";
             Column3.Name = "Column3";
             Column3.ReadOnly = true;
@@ -82,6 +85,7 @@
             Controls.Add(gvRecords);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "RecordsTableForm";
+            Padding = new Padding(10);
             StartPosition = FormStartPosition.CenterParent;
             Text = "Сапёр";
             Load += RecordsTableForm_Load;

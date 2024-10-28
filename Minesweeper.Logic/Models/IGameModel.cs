@@ -16,8 +16,6 @@ public interface IGameModel
 
     List<(string Level, int Time, string GamerName)> GetRecordsTable();
 
-    List<int[]> GetModifiedCellsIndexes();
-
     event Action FieldCreated;
 
     event Action<(int RowIndex, int ColumnIndex, bool HasFlag)> FlagToggled;

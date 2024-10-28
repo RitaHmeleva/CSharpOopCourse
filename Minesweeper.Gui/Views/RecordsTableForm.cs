@@ -2,7 +2,7 @@
 
 public partial class RecordsTableForm : Form
 {
-    public List<(string Level, int Time, string GamerName)> Records { get; set; }
+    public List<(string Level, int Time, string GamerName)>? Records { get; set; }
 
     public RecordsTableForm()
     {
@@ -11,9 +11,6 @@ public partial class RecordsTableForm : Form
 
     private void RecordsTableForm_Load(object sender, EventArgs e)
     {
-        foreach (var record in Records)
-        {
-            gvRecords.Rows.Add(new string[] { record.Level, record.Time.ToString(), record.GamerName });
-        }
+        gvRecords.DataSource = Records?.Select(r => new { r.Level, r.Time, r.GamerName }).ToList();
     }
 }
