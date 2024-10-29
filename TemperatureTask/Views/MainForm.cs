@@ -20,7 +20,7 @@ public partial class MainForm : Form, IMainForm
         {
             MessageBox.Show("Конвертация не требуется. Выбрана одинаковая шкала температур.", "Конвертер температуры", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        else if (double.TryParse(tbSourceTemperature.Text, out double value))
+        else if (double.TryParse(tbSourceTemperature.Text, out var value))
         {
             ConvertTemperature?.Invoke(value);
         }

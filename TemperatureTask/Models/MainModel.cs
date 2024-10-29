@@ -49,9 +49,13 @@ internal class MainModel : IMainModel
 
     public ITemperatureScale GetScaleByCode(string code)
     {
-        var scale = Scales.Where(s => s.Code == code).First();
+        ITemperatureScale scale;
 
-        if (scale == null)
+        try
+        {
+            scale = Scales.First(s => s.Code == code);
+        }
+        catch (InvalidOperationException)
         {
             throw new ArgumentException("Invalid temperature code", nameof(code));
         }
@@ -59,8 +63,8 @@ internal class MainModel : IMainModel
         return scale;
     }
 
-    public void SetTemperature(double temperature, ITemperatureScale scale)
+    public void SetTemperature(double temperature)
     {
-        Kelvin = scale.ConvertToKelvin(temperature);
+        Kelvin = SourceScale.ConvertToKelvin(temperature);
     }
 }

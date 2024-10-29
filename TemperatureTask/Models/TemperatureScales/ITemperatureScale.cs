@@ -1,15 +1,14 @@
-﻿namespace TemperatureTask.Models.TemperatureScales
+﻿namespace TemperatureTask.Models.TemperatureScales;
+
+public interface ITemperatureScale
 {
-    public interface ITemperatureScale
-    {
-        string Name { get; }
+    string Name { get; }
 
-        string UnitsName { get; }
+    string UnitsName { get; }
 
-        string Code { get; }
+    string Code { get; }
 
-        double ConvertToKelvin(double value);
+    double ConvertToKelvin(double value);
 
-        double ConvertFromKelvin(double value);
-    }
+    double ConvertFromKelvin(double value);
 }

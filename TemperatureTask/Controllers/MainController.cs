@@ -38,7 +38,7 @@ internal class MainController
 
     private void ConvertTemperature(double value)
     {
-        _model.SetTemperature(value, _model.SourceScale);
+        _model.SetTemperature(value);
 
         _view.SetTargetTemperature(_model.TargetTemperature);
     }

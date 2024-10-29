@@ -18,5 +18,5 @@ internal interface IMainModel
 
     double GetTemperature(ITemperatureScale scale);
 
-    void SetTemperature(double value, ITemperatureScale scale);
+    void SetTemperature(double value);
 }
