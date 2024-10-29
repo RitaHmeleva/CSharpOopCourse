@@ -10,26 +10,23 @@ class SinglyLinkedList<T>
 
     public override string ToString()
     {
-        StringBuilder stringBuilder = new StringBuilder("(");
-
         if (_head is null)
         {
-            stringBuilder.Append(')');
-
-            return stringBuilder.ToString();
+            return string.Empty;
         }
+
+        StringBuilder stringBuilder = new StringBuilder("(");
 
         for (ListItem<T>? currentItem = _head; currentItem is not null; currentItem = currentItem.Next)
         {
-            stringBuilder.Append(currentItem.Data);
-
-            if (currentItem.Next is not null)
-            {
-                stringBuilder.Append(", ");
-            }
+            stringBuilder
+                .Append(currentItem.Data)
+                .Append(", ");
         }
 
-        stringBuilder.Append(')');
+        stringBuilder
+            .Remove(stringBuilder.Length - 2, 2)
+            .Append(')');
 
         return stringBuilder.ToString();
     }
@@ -70,31 +67,20 @@ class SinglyLinkedList<T>
         {
             CheckIndex(index);
 
-            ListItem<T> item = GetItem(index);
-
-            return item.Data;
+            return GetItem(index).Data;
         }
 
         set
         {
             CheckIndex(index);
 
-            ListItem<T> item = GetItem(index);
-
-            item.Data = value;
+            GetItem(index).Data = value;
         }
     }
 
     public T Remove(int index)
     {
-        if (_head is null)
-        {
-            throw new InvalidOperationException("Can't remove element from empty list");
-        }
-
         CheckIndex(index);
-
-        Count--;
 
         if (index == 0)
         {
@@ -105,6 +91,8 @@ class SinglyLinkedList<T>
 
         T removedData = previousItem.Next!.Data;
         previousItem.Next = previousItem.Next.Next;
+
+        Count--;
 
         return removedData;
     }
@@ -126,17 +114,15 @@ class SinglyLinkedList<T>
         if (index == 0)
         {
             AddFirst(data);
-        }
-        else
-        {
-            ListItem<T> newItem = new ListItem<T>(data);
-            ListItem<T>? previousItem = GetItem(index - 1);
 
-            newItem.Next = previousItem.Next;
-            previousItem.Next = newItem;
-
-            Count++;
+            return;
         }
+
+        ListItem<T> previousItem = GetItem(index - 1);
+
+        previousItem.Next = new ListItem<T>(data, previousItem.Next);
+
+        Count++;
     }
 
     public bool RemoveData(T data)
