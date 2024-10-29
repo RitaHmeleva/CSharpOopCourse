@@ -8,7 +8,7 @@ public class Graph
     {
         if (matrix.GetLength(0) != matrix.GetLength(1))
         {
-            throw new InvalidOperationException($"Rows count {matrix.GetLength(0)} should be = columns count {matrix.GetLength(1)}");
+            throw new ArgumentException($"Rows count {matrix.GetLength(0)} should be = columns count {matrix.GetLength(1)}", nameof(matrix));
         }
 
         _matrix = new int[matrix.GetLength(0), matrix.GetLength(1)];
@@ -45,7 +45,7 @@ public class Graph
 
                 for (int j = 0; j < _matrix.GetLength(0); j++)
                 {
-                    if (_matrix[vertex, j] != 0 && !(visited[j]))
+                    if (_matrix[vertex, j] != 0 && !visited[j])
                     {
                         queue.Enqueue(j);
                     }
