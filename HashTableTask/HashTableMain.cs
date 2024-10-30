@@ -10,7 +10,7 @@ internal class HashTableMain
         Console.WriteLine($"Count = {hashTable.Count}");
         Console.WriteLine(hashTable.Contains(6));
 
-        hashTable.Remove(6);
+        hashTable.Remove(66);
         Console.WriteLine(hashTable.Contains(6));
 
         int[] array = new int[10];

@@ -3,11 +3,11 @@ using System.Text;
 
 namespace HashTableTask;
 
-internal class HashTable<T> : ICollection<T>
+public class HashTable<T> : ICollection<T>
 {
     private readonly List<T>?[] _lists;
 
-    private long _version = 1;
+    private long _version = 0;
 
     private const int DefaultSize = 101;
 
@@ -43,17 +43,16 @@ internal class HashTable<T> : ICollection<T>
 
         foreach (T item in this)
         {
-            stringBuilder.Append(item);
-
-            if (i < Count - 1)
-            {
-                stringBuilder.Append(", ");
-            }
+            stringBuilder
+                .Append(item)
+                .Append(", ");
 
             i++;
         }
 
-        stringBuilder.Append(']');
+        stringBuilder
+            .Remove(stringBuilder.Length - 2, 2)
+            .Append(']');
 
         return stringBuilder.ToString();
     }
@@ -87,9 +86,9 @@ internal class HashTable<T> : ICollection<T>
             return;
         }
 
-        for (int i = 0; i < _lists.Length; i++)
+        foreach (List<T>? list in _lists)
         {
-            _lists[i]?.Clear();
+            list?.Clear();
         }
 
         Count = 0;
@@ -120,12 +119,12 @@ internal class HashTable<T> : ICollection<T>
             throw new ArgumentException("Not enough space in array", nameof(array));
         }
 
-        int index = arrayIndex;
+        int i = arrayIndex;
 
         foreach (T item in this)
         {
-            array[index] = item;
-            index++;
+            array[i] = item;
+            i++;
         }
     }
 
@@ -133,7 +132,7 @@ internal class HashTable<T> : ICollection<T>
     {
         int index = GetIndex(item);
 
-        if (_lists[index]!.Remove(item))
+        if (_lists[index] is not null && _lists[index]!.Remove(item))
         {
             _version++;
             Count--;
