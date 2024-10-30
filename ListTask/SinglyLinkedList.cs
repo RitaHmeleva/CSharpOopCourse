@@ -12,7 +12,7 @@ class SinglyLinkedList<T>
     {
         if (_head is null)
         {
-            return string.Empty;
+            return "()";
         }
 
         StringBuilder stringBuilder = new StringBuilder("(");
