@@ -110,11 +110,11 @@ public class Graph
         visited[vertex] = true;
         action(vertex);
 
-        for (int j = 0; j < _matrix.GetLength(0); j++)
+        for (int i = 0; i < _matrix.GetLength(0); i++)
         {
-            if (_matrix[vertex, j] != 0 && !visited[j])
+            if (_matrix[vertex, i] != 0 && !visited[i])
             {
-                DepthTraversalRecursive(j, visited, action);
+                DepthTraversalRecursive(i, visited, action);
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace VectorTask;
+﻿namespace VectorTask;
 
 public class Vector
 {

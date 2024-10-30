@@ -23,7 +23,6 @@ internal class TreeMain
         tree.InsertNode(10);
         tree.InsertNode(11);
         tree.InsertNode(16);
-        tree.InsertNode(17);
 
         Console.WriteLine(tree);
 

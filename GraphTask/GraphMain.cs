@@ -2,7 +2,7 @@
 
 internal class GraphMain
 {
-    static void PrintNode(int node)
+    public static void PrintNode(int node)
     {
         Console.WriteLine(node);
     }
