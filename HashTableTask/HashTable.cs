@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text;
+using System.Threading;
 
 namespace HashTableTask;
 
@@ -7,7 +8,7 @@ public class HashTable<T> : ICollection<T>
 {
     private readonly List<T>?[] _lists;
 
-    private long _version = 0;
+    private long _version;
 
     private const int DefaultSize = 101;
 
@@ -35,6 +36,11 @@ public class HashTable<T> : ICollection<T>
 
     public override string ToString()
     {
+        if (Count == 0)
+        {
+            return "[]";
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('[');
