@@ -4,124 +4,162 @@ namespace CsvTask;
 
 class Csv
 {
-    private Table _table;
-
-    public char Separator { get; set; } = ',';
-
-    public Csv()
-    {
-        _table = new Table();
-    }
-
-    public void ReadCsvToHtml(string fileName, string outputTableName)
+    public void ConvertCsvToHtml(string fileName, string outputTableName)
     {
         bool isQuotedString = false;
         bool isNewString;
         int characterIndex;
 
-        Row row = null;
+        int rowsCount = 0;
 
         StringBuilder line = new StringBuilder();
 
-        using (StreamReader reader = new StreamReader(fileName))
+        using StreamWriter writer = new StreamWriter(outputTableName);
+
+        writer.WriteLine("<!DOCTYPE html>");
+        writer.WriteLine("<html>");
+        writer.WriteLine("<head>");
+        writer.WriteLine("<title>CsvParser</title>");
+        writer.WriteLine("<meta charSet = \"utf -8\" />");
+        writer.WriteLine("<style>");
+        writer.WriteLine("table, th, td {");
+        writer.WriteLine("border: 1px solid black;");
+        writer.WriteLine("border-collapse: collapse;");
+        writer.WriteLine("}");
+        writer.WriteLine("</style>");
+        writer.WriteLine("</head>");
+        writer.WriteLine("<body>");
+
+        using StreamReader reader = new StreamReader(fileName);
+
+        string? currentLine;
+
+        writer.WriteLine("<table>");
+
+        while ((currentLine = reader.ReadLine()) != null)
         {
-            string currentLine;
-
-            while ((currentLine = reader.ReadLine()) != null)
+            if (isQuotedString)
             {
-                if (isQuotedString)
+                line.Append("<br/>");
+            }
+            else
+            {
+                if (rowsCount > 0)
                 {
-                    line.AppendLine();
-                }
-                else
-                {
-                    row = _table.AddRow();
-
-                    if (_table.RowsCount > 1)
-                    {
-                        if (line.Length > 0)
-                        {
-                            row.AddCell(line.ToString());
-                            line.Clear();
-                        }
-                    }
+                    writer.WriteLine("</tr>");
                 }
 
-                isNewString = !isQuotedString;
+                writer.WriteLine("<tr>");
 
-                characterIndex = 0;
-
-                for (int j = 0; j < currentLine.Length; j++)
+                if (rowsCount > 0)
                 {
-                    if (isNewString)
+                    if (line.Length > 0)
                     {
-                        isQuotedString = currentLine[j] == '"';
+                        writer.Write("<td>");
+                        writer.Write(line.ToString());
+                        writer.WriteLine("</td>");
 
-                        if (isQuotedString)
-                        {
-                            isNewString = false;
-                            j++;
-
-                            continue;
-                        }
-                    }
-
-                    if (currentLine[j] == '"')
-                    {
-                        if (isQuotedString)
-                        {
-                            if (j < currentLine.Length - 1 && currentLine[j + 1] == '"')
-                            {
-                                line.Append('"');
-                                characterIndex += 2;
-                                continue;
-                            }
-
-                            isQuotedString = false;
-                            j++;
-
-                            continue;
-                        }
-                        else
-                        {
-                            j++;
-
-                            continue;
-                        }
-                    }
-
-                    if (currentLine[j] == ',' && !isQuotedString)
-                    {
-                        row.AddCell(line.ToString());
                         line.Clear();
-                        isNewString = true;
-                        j++;
+                    }
+                }
+
+                rowsCount++;
+            }
+
+            isNewString = !isQuotedString;
+
+            characterIndex = 0;
+
+            for (int i = 0; i < currentLine.Length; i++)
+            {
+                if (isNewString)
+                {
+                    isQuotedString = currentLine[i] == '"';
+
+                    if (isQuotedString)
+                    {
+                        isNewString = false;
 
                         continue;
                     }
-
-                    line.Append(currentLine[j]);
-
-                    isNewString = false;
                 }
 
-                if (!isQuotedString)
+                if (currentLine[i] == '"')
                 {
-                    row.AddCell(line.ToString());
+                    if (isQuotedString)
+                    {
+                        if (i < currentLine.Length - 1 && currentLine[i + 1] == '"')
+                        {
+                            line.Append('"');
+                            characterIndex += 2;
+                            i++;
+
+                            continue;
+                        }
+
+                        isQuotedString = false;
+
+                        continue;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                if (currentLine[i] == ',' && !isQuotedString)
+                {
+                    writer.Write("<td>");
+                    writer.Write(line.ToString());
+                    writer.WriteLine("</td>");
+
                     line.Clear();
                     isNewString = true;
+
+                    continue;
                 }
+
+                if (currentLine[i] == '<')
+                {
+                    line.Append("&lt");
+                }
+
+                if (currentLine[i] == '>')
+                {
+                    line.Append("&gt");
+                }
+
+                if (currentLine[i] == '<')
+                {
+                    line.Append("&amp");
+                }
+
+                line.Append(currentLine[i]);
+
+                isNewString = false;
             }
 
-            if (line.Length > 0)
+            if (!isQuotedString)
             {
-                row.AddCell(line.ToString());
+                writer.Write("<td>");
+                writer.Write(line.ToString());
+                writer.WriteLine("</td>");
+
+                line.Clear();
+                isNewString = true;
             }
         }
 
-        using (StreamWriter writer = new StreamWriter(outputTableName))
+        if (line.Length > 0)
         {
-            writer.WriteLine(_table.Html);
+            writer.Write("<td>");
+            writer.Write(line.ToString());
+            writer.WriteLine("</td>");
+            writer.WriteLine("</tr>");
         }
+
+        writer.WriteLine("</table>");
+        writer.WriteLine("</body>");
+        writer.Write("</html>");
     }
 }
