@@ -2,31 +2,31 @@
 
 internal class TreeMain
 {
-    public static void PrintData(TreeNode<int> node)
+    public static void PrintData<T>(T data)
     {
-        Console.WriteLine(node.Data);
+        Console.WriteLine(data);
     }
 
     static void Main(string[] args)
     {
         BinarySearchTree<int> tree = new BinarySearchTree<int>();
 
-        tree.InsertNode(12);
-        tree.InsertNode(3);
-        tree.InsertNode(15);
-        tree.InsertNode(14);
-        tree.InsertNode(5);
-        tree.InsertNode(1);
-        tree.InsertNode(9);
-        tree.InsertNode(13);
-        tree.InsertNode(4);
-        tree.InsertNode(10);
-        tree.InsertNode(11);
-        tree.InsertNode(16);
+        tree.Add(12);
+        tree.Add(3);
+        tree.Add(15);
+        tree.Add(14);
+        tree.Add(5);
+        tree.Add(1);
+        tree.Add(9);
+        tree.Add(13);
+        tree.Add(4);
+        tree.Add(10);
+        tree.Add(11);
+        tree.Add(16);
 
         Console.WriteLine(tree);
 
-        tree.DeleteNode(5);
+        tree.Remove(5);
         Console.WriteLine("Дерево:");
         Console.WriteLine(tree);
 
