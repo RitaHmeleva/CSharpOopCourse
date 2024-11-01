@@ -7,7 +7,7 @@ public class List<T> : IList<T>
 {
     private const int DefaultCapacity = 10;
     private T[] _items;
-    private long _version = 0;
+    private long _version;
 
     public List()
     {
@@ -35,14 +35,9 @@ public class List<T> : IList<T>
 
         set
         {
-            if (value < 0)
-            {
-                throw new ArgumentException($"Capacity {value} should be >= 0", nameof(value));
-            }
-
             if (value < Count)
             {
-                throw new ArgumentOutOfRangeException($"Capacity {value} should be >= count {Count}", nameof(value));
+                throw new ArgumentOutOfRangeException(nameof(value), $"Capacity {value} should be >= count {Count}");
             }
 
             Array.Resize(ref _items, value);
@@ -75,9 +70,9 @@ public class List<T> : IList<T>
                 .Append(", ");
         }
 
-        stringBuilder.Append(_items[Count - 1]);
-
-        stringBuilder.Append(']');
+        stringBuilder
+            .Append(_items[Count - 1])
+            .Append(']');
 
         return stringBuilder.ToString();
     }
@@ -214,10 +209,7 @@ public class List<T> : IList<T>
             return;
         }
 
-        for (int i = 0; i < Count; i++)
-        {
-            _items[i] = default!;
-        }
+        Array.Clear(_items);
 
         Count = 0;
         _version++;
