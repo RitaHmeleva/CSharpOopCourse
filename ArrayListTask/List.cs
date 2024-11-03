@@ -209,7 +209,7 @@ public class List<T> : IList<T>
             return;
         }
 
-        Array.Clear(_items);
+        Array.Clear(_items, 0, Count);
 
         Count = 0;
         _version++;
