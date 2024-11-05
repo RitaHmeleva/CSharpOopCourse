@@ -2,20 +2,55 @@
 
 internal class ArrayListHomeMain
 {
-    public static List<string> ReadFileToList(string fileName)
+    public static List<string> GetFileLinesList(string fileName)
     {
-        List<string> stringsList = new List<string>();
+        List<string> linesList = new List<string>();
+
+        using StreamReader reader = new StreamReader(fileName);
+
+        string? currentLine;
+
+        while ((currentLine = reader.ReadLine()) != null)
+        {
+            linesList.Add(currentLine);
+        }
+
+        return linesList;
+    }
+
+    public static void RemoveEvenNumbers(List<int> list)
+    {
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            if (list[i] % 2 == 0)
+            {
+                list.RemoveAt(i);
+            }
+        }
+    }
+
+    public static List<T> GetUniqueElements<T>(List<T> list)
+    {
+        List<T> uniqueList = new List<T>(list.Count);
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (!uniqueList.Contains(list[i]))
+            {
+                uniqueList.Add(list[i]);
+            }
+        }
+
+        return uniqueList;
+    }
+
+    static void Main(string[] args)
+    {
+        List<string>? linesList = null;
 
         try
         {
-            using StreamReader reader = new StreamReader(fileName);
-
-            string? currentLine;
-
-            while ((currentLine = reader.ReadLine()) != null)
-            {
-                stringsList.Add(currentLine);
-            }
+            linesList = GetFileLinesList("..\\..\\list.txt");
         }
         catch (FileNotFoundException e)
         {
@@ -30,47 +65,7 @@ internal class ArrayListHomeMain
             Console.WriteLine(e.Message);
         }
 
-        return stringsList;
-    }
-
-    public static void RemoveEvenNumbers(List<int> list)
-    {
-        for (int i = list.Count - 1; i >= 0; i--)
-        {
-            if (list[i] % 2 == 0)
-            {
-                list.RemoveAt(i);
-            }
-        }
-    }
-
-    public static  List<T> RemoveRepeatedElements<T>(List<T> list)
-    {
-        List<T> newList = new List<T>(list.Count);
-
-        if (list.Count == 0)
-        {
-            return newList;
-        }
-
-        newList.Add(list[0]);
-
-        for (int i = 1; i < list.Count; i++)
-        {
-            if (!newList.Contains(list[i]))
-            {
-                newList.Add(list[i]);
-            }
-        }
-
-        return newList;
-    }
-
-    static void Main(string[] args)
-    {
-        List<string> stringsList = ReadFileToList("..\\..\\list.txt");
-
-        foreach (string line in stringsList)
+        foreach (string line in linesList!)
         {
             Console.WriteLine(line);
         }
@@ -88,7 +83,7 @@ internal class ArrayListHomeMain
 
         Console.WriteLine();
 
-        List<int> distinctList = RemoveRepeatedElements<int>(numbersList);
+        List<int> distinctList = GetUniqueElements(numbersList);
 
         foreach (int element in distinctList)
         {
