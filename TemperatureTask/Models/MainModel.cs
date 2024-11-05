@@ -14,14 +14,9 @@ internal class MainModel : IMainModel
 
     public ITemperatureScale TargetScale { get; set; }
 
-    public MainModel()
+    public MainModel(List<ITemperatureScale> scales)
     {
-        Scales = new List<ITemperatureScale>
-        {
-            new KelvinScale(),
-            new CelsiusScale(),
-            new FahrenheitScale()
-        };
+        Scales = scales;
 
         SourceScale = GetScaleByCode("Celsius");
         TargetScale = GetScaleByCode("Fahrenheit");
@@ -49,15 +44,13 @@ internal class MainModel : IMainModel
 
     public ITemperatureScale GetScaleByCode(string code)
     {
-        ITemperatureScale scale;
+        ITemperatureScale? scale;
 
-        try
+        scale = Scales.FirstOrDefault((s => s!.Code == code), null);
+
+        if (scale == null)
         {
-            scale = Scales.First(s => s.Code == code);
-        }
-        catch (InvalidOperationException)
-        {
-            throw new ArgumentException("Invalid temperature code", nameof(code));
+            throw new ArgumentException($"Invalid temperature code {code}", nameof(code));
         }
 
         return scale;
