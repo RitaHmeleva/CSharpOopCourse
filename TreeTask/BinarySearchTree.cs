@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Xml.Linq;
 
 namespace TreeTask;
 
@@ -24,7 +23,7 @@ public class BinarySearchTree<T>
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        BreadthTraversal((data) =>
+        BreadthTraversal(data =>
         {
             stringBuilder
                 .Append(' ')
@@ -33,7 +32,7 @@ public class BinarySearchTree<T>
 
             TreeNode<T> node = GetNode(data)!;
 
-            if (node!.Left != null)
+            if (node.Left != null)
             {
                 stringBuilder.Append(node.Left.Data);
             }
@@ -216,7 +215,7 @@ public class BinarySearchTree<T>
         {
             TreeNode<T> currentNode = queue.Dequeue();
 
-            action?.Invoke(currentNode.Data);
+            action(currentNode.Data);
 
             if (currentNode.Left != null)
             {
@@ -245,7 +244,7 @@ public class BinarySearchTree<T>
         {
             TreeNode<T> currentNode = stack.Pop();
 
-            action?.Invoke(currentNode.Data);
+            action(currentNode.Data);
 
             if (currentNode.Right != null)
             {
@@ -269,7 +268,7 @@ public class BinarySearchTree<T>
 
     private static void DepthTraversalRecursive(TreeNode<T> node, Action<T> action)
     {
-        action?.Invoke(node.Data);
+        action(node.Data);
 
         if (node.Left != null)
         {
